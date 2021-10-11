@@ -1,14 +1,19 @@
 import numpy as np
 
 #Helper function
-def change3DSizeTo(psf, shape):
+def change3DSizeTo(data, shape):
+    '''
+    Resizes data to the new shape keeping data centralized.
+    If data size is smaller, then egdes are cropped.
+    If data is larger, data will be padded with zeros.
+    '''
     #based in size() code found in
     #https://github.com/Biomedical-Imaging-Group/DeconvolutionLab2/blob/e9af0aba493ba137d70877154648e5583e376a81/src/main/java/signal/RealSignal.java#L531
 
     mz,my, mx = shape
-    nz,ny,nx = psf.shape
+    nz,ny,nx = data.shape
 
-    psf1 = np.zeros( shape , dtype=psf.dtype)
+    psf1 = np.zeros( shape , dtype=data.dtype)
     
     vx = min(nx,mx)
     vy = min(ny,my)
@@ -21,7 +26,7 @@ def change3DSizeTo(psf, shape):
     (py0, qy0) = (oy, 0) if oy>=0 else (0, -oy)
     (px0, qx0) = (ox, 0) if ox>=0 else (0, -ox)
 
-    psf1[ pz0:pz0+vz , py0:py0+vy , px0:px0+vx ] = psf[ qz0:qz0+vz , qy0:qy0+vy ,  qx0:qx0+vx]
+    psf1[ pz0:pz0+vz , py0:py0+vy , px0:px0+vx ] = data[ qz0:qz0+vz , qy0:qy0+vy ,  qx0:qx0+vx]
 
     return psf1
 
