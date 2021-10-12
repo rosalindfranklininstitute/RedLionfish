@@ -12,7 +12,7 @@ Copyright (C) 2021 Rosalind Franklin Institute
 
 from setuptools import setup, find_packages
 
-import RedLionfishDeconv
+# import RedLionfishDeconv
 
 
 setup(

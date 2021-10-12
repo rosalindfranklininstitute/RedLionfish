@@ -14,7 +14,7 @@ If you wish to do RL using GPU openCL on large data, then the 'block' version is
 
 Run:
 
-`python setup.py`
+`python setup.py develop`
 
 or download and place in appropriate folder ready to be used. Make sure that it is reachable by python.
 
