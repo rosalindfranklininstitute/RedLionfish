@@ -32,6 +32,9 @@ def change3DSizeTo(data, shape):
 
 
 #An implementation of the circular() routine from DeconvolutionLab2 that shifts the data centre of the psf
+#to the corners of the volume.
+#This is important so that convolution of data with psf is will not shift features (like beads).
+#It is assumeed that the PSF data has the psf-origin at the center of the data 
 def circulify3D(data3D):
     #Check data is 3D
     if data3D.ndim != 3:

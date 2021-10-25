@@ -1,5 +1,10 @@
 #Entry point for doing RL 3D deconvolution using either CPU or GPU
 
+#TODO: A lot of these parameters can be passed as **kwargs.
+#TODO: Test GPU acceleration on MacOS
+#TODO: Convert print() to logging.info
+#TODO: Consider open files using scipy.imread rather than the tifffile modules
+
 from numpy.lib.npyio import save
 from RedLionfishDeconv import helperfunctions
 
@@ -102,7 +107,7 @@ def doRLDeconvolutionFromFiles(datapath, psfpath, niter, savepath=None):
 
 
 
-#TODO: Ability to run from command line providing tiff (or other) filenames
+# Ability to run from command line providing tiff (or other) filenames
 def main():
     import argparse
     import os

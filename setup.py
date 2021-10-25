@@ -16,7 +16,7 @@ from setuptools import setup, find_packages
 
 
 setup(
-    version = '0.0',
+    version = '0.1',
     name = 'RedLionfish',
     description = 'Fast Richardson-Lucy deconvolution of 3D volume data using GPU or CPU.',
     url = 'https://github.com/rosalindfranklininstitute/RedLionfish',
@@ -28,7 +28,7 @@ setup(
         'License :: Not decided yet',
         'Natural Language :: English',
         'Programming Language :: Python :: 3.8',
-        'Operating System :: Windows :: POSIX :: Linux',
+        'Operating System :: Windows :: POSIX :: Linux :: MacOS',
     ],
     license='Not sure',
     zip_safe=False,
