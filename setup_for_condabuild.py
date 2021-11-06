@@ -1,16 +1,10 @@
-print ("Please note this software can use GPU accelation using PyOpenCL and Reikna.")
-print("The Pyopencl package available through pip does not install correctly.")
-print("The best way to install PyOpenCL+Reikna  in a python environment is by using anaconda/conda envirnonments.")
-print("See more information here: https://documen.tician.de/pyopencl/misc.html")
-print("If PyOpenCL+Reikna are not available, it can still run but it will use CPU scipy FFT routines instead which can be slow.")
-
 """
 Copyright (C) 2021 Rosalind Franklin Institute
 
 """
 
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 # import RedLionfishDeconv
 
@@ -33,7 +27,6 @@ setup(
     license='Not sure',
     zip_safe=False,
     install_requires=[
-        numpy,
-        scipy
+        
     ]
 )

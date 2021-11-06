@@ -12,12 +12,18 @@ If you wish to do RL using GPU openCL on large data, then the 'block' version is
 
 ## Installation
 
+Please note that in order to use OpenCL GPU accelerations, PyopenCL must be installed.
+The only feasible way to get it working is to install it under a conda environment.
+
 Run:
 
 `python setup.py develop`
 
 or download and place in appropriate folder ready to be used. Make sure that it is reachable by python.
 
+### Install in conda environment
+
+Download the conda package .bzp
 
 ## Coding
 
@@ -28,3 +34,8 @@ Don't forget to `import RedLionfishDeconv` in order to use the functions:
 - `def doRLDeconvolutionFromNpArrays(data_np , psf_np ,*, niter=10, method='gpu', useBlockAlgorithm=False, callbkTickFunc=None, resAsUint8 = False) `
 - or run from command line `python RLDeconvolve.py data.tif psf.tif <iter> --out outfile.tif `
 
+## Build conda package
+
+Navigate to `conda-recipe`.
+
+Execute on the command-line `conda build .`. It will take a while to complete.

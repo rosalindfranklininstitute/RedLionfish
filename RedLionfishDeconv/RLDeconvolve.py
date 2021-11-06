@@ -5,8 +5,8 @@
 #TODO: Convert print() to logging.info
 #TODO: Consider open files using scipy.imread rather than the tifffile modules
 
-from numpy.lib.npyio import save
 from RedLionfishDeconv import helperfunctions
+import logging
 
 def doRLDeconvolutionFromNpArrays(data_np , psf_np ,*, niter=10, method='gpu', useBlockAlgorithm=False, callbkTickFunc=None, resAsUint8 = False):
     '''
@@ -25,7 +25,7 @@ def doRLDeconvolutionFromNpArrays(data_np , psf_np ,*, niter=10, method='gpu', u
                 Set to False to return result as default np.float32 format.
     '''
 
-    print(f"doRLDeconvolutionFromNpArrays(), niter={niter} , method={method} , useBlockAlgorithm={useBlockAlgorithm}, resAsUint8={resAsUint8}")
+    logging.debug(f"doRLDeconvolutionFromNpArrays(), niter={niter} , method={method} , useBlockAlgorithm={useBlockAlgorithm}, resAsUint8={resAsUint8}")
 
     resRL = None
 
@@ -39,8 +39,8 @@ def doRLDeconvolutionFromNpArrays(data_np , psf_np ,*, niter=10, method='gpu', u
                     resRL = rlreikna.nonBlock_RLDeconvolutionReiknaOCL(data_np, psf_np, niter=niter, callbkTickFunc=callbkTickFunc)
                 except Exception as e:
                     #Probably out of memory error, fallback to block algorithm
-                    print("Error: nonBlock_RLDeconvolutionReiknaOCL failed (GPU). Will try next to use block deconvolution.")
-                    print(e)
+                    logging.info("nonBlock_RLDeconvolutionReiknaOCL() failed (GPU). Will try next to use block deconvolution.")
+                    logging.info(e)
                     useBlockAlgorithm= True
             if useBlockAlgorithm:
                 bKeepTrying=True
@@ -51,8 +51,8 @@ def doRLDeconvolutionFromNpArrays(data_np , psf_np ,*, niter=10, method='gpu', u
                         bKeepTrying=False
                     except Exception as e:
                         #Error doing previous calculation, reduce block size
-                        print(f"Error: block_RLDeconv3DReiknaOCL4 with blocksize={blocksize} failed (GPU). Will try to halve blocksize.")
-                        print(e)
+                        logging.info(f"Error: block_RLDeconv3DReiknaOCL4 with blocksize={blocksize} failed (GPU). Will try to halve blocksize.")
+                        logging.info(e)
                         if blocksize>=128 :
                             blocksize = blocksize//2
                             bKeepTrying=True
@@ -60,7 +60,7 @@ def doRLDeconvolutionFromNpArrays(data_np , psf_np ,*, niter=10, method='gpu', u
                             #No point reducing the block size to smaller, fall back to CPU
                             bKeepTrying=False
                             method = 'cpu'
-                            print('GPU calculation failed, falling back to CPU.')
+                            logging.info('GPU calculation failed, falling back to CPU.')
 
         else:
             print ("Reikna is not available, falling back to CPU scipy calculation")
@@ -71,8 +71,8 @@ def doRLDeconvolutionFromNpArrays(data_np , psf_np ,*, niter=10, method='gpu', u
         try:
             resRL = rlcpu.doRLDeconvolution_DL2_4(data_np, psf_np, niter=niter, callbkTickFunc=callbkTickFunc)
         except Exception as e:
-            print("doRLDeconvolution_DL2_4 failed (CPU) with error:")
-            print(str(e))
+            logging.info("doRLDeconvolution_DL2_4 failed (CPU) with error:")
+            logging.info(str(e))
 
     if resAsUint8:
         resRL = helperfunctions.convertToUint8AndFullRange(resRL)
@@ -87,24 +87,23 @@ def doRLDeconvolutionFromFiles(datapath, psfpath, niter, savepath=None):
     #Check al info is ok
     data_np = np.array(tf.imread(datapath))
     if data_np.ndim !=3:
-        print("Data is not 3 dimensional. Exiting.")
+        logging.info("Data is not 3 dimensional. Exiting.")
         sys.exit
 
     psf_np = np.array(tf.imread(psfpath))
     if psf_np.ndim != 3:
-        print("Psf is not 3-dimensional. Exiting.")
+        logging.info("Psf is not 3-dimensional. Exiting.")
         sys.exit()
 
     res_np = doRLDeconvolutionFromNpArrays(data_np, psf_np, niter=niter, resAsUint8=True)
 
-    print("res_np collected")
+    logging.info("res_np collected")
 
     if (not res_np is None) and (not savepath is None):
-        print(f"Saving data to {savepath}")
+        logging.info(f"Saving data to {savepath}")
         tf.imsave(savepath, res_np)
     
     return res_np
-
 
 
 # Ability to run from command line providing tiff (or other) filenames
@@ -147,7 +146,6 @@ def main():
         outpath = pathname + "_it" + str(iterations) + ".tiff"
 
     doRLDeconvolutionFromFiles(data3Dpath, psf3Dpath, iterations, savepath=outpath)
-
 
 if __name__ == "__main__":
     # Run if called from the command line

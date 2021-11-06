@@ -1,0 +1,41 @@
+{% set name = "RedLionfish" %}
+{% set version = "0.2" %}
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  path: ..
+
+#build:
+#  number: 0
+
+  #Not sure this is needed
+  #It appears to be important. If running conda-build --build-only conda-recipe it will not create folder for redlionfish in \miniconda3\envs\dev\conda-bld
+  # build: python -m pip install --no-deps --ignore-installed -vv .
+  #build: python setup.py install
+  
+  #It will run bld.bat anyway
+
+requirements:
+  host: #Specific for to the target platform
+    - python
+    - pip
+
+  run: #packages required to run the package, to install automatically when this package is installed using conda install
+    - python
+    - numpy
+    - scipy
+    - pyopencl
+    - reikna
+
+test:
+  imports:
+    - RedLionfishDeconv
+
+about:
+  home: https://github.com/rosalindfranklininstitute/RedLionfish
+  license: BSD-3-Clause
+  license_family: BSD
+  summary: Richardson-Lucy deconvolution of 3D data
