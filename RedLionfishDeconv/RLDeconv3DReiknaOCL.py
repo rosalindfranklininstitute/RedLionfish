@@ -22,6 +22,7 @@ except Exception as e:
     print(e)
     isReiknaAvailable=False
 
+import logging
 import numpy as np
 from .helperfunctions import *
 
@@ -46,7 +47,7 @@ class RLDeconv3DReiknaOCL:
         self.thr = self.api.Thread.create()
 
         #TODO:check shape is not too large
-        ocldevice = self.api.get_platforms()[0].get_devices()[0]
+        ocldevice = self.api.get_platforms()[0].get_devices()[0] #Get first device available
         devparam = self.api.DeviceParameters(ocldevice)
         maxsize = devparam.max_work_item_sizes
         if np.product(np.array(shape)) > np.product(np.array(maxsize)):
@@ -123,6 +124,7 @@ class RLDeconv3DReiknaOCL:
     def setPSF(self,psfdata):
         #Prepare data
         #Convert to float, normalise to sum, calculate fft's and of flipped version
+        logging.debug("setPSF()")
 
         psf_norm = convertToFloat32AndNormalise(psfdata , normaliseType='sum', bResetZero=False) #Normalise to sum
         psf0 = change3DSizeTo(psf_norm, self.shape) #Adjust size
@@ -155,9 +157,11 @@ class RLDeconv3DReiknaOCL:
         returns the Deconvoluted data volume, only the real part (float32 format)
         '''
         
+        logging.debug("doRLDeconvolution()")
+
         #Check data and shape are consistent
         if data_np.shape[0] != self.shape[0] or data_np.shape[1] != self.shape[1] or data_np.shape[2] != self.shape[2]:
-            print("Data input shape is different from the shape that was initially set. Please make sure shapes are the same.")
+            logging.error("Data input shape is different from the shape that was initially set. Please make sure shapes are the same.")
             return None
         
         #Check psf was set
@@ -212,9 +216,9 @@ class RLDeconv3DReiknaOCL:
 
             #Collect result
             xn1 = xn1_dev.get().real
-            print("RL completed, result collected")
+            logging.info("RL completed, result collected")
             
-            print("Clearing GPU RAM")
+            logging.info("Clearing GPU RAM")
             #Clear GPU memory
             del(xn1_dev)
             del(xn_buff)
@@ -227,7 +231,7 @@ class RLDeconv3DReiknaOCL:
             return xn1
 
         else:
-            print("Psf was not set. Please set it by doing .setPSF(psfdata) .")
+            logging.error("Psf was not set. Please set it by doing .setPSF(psfdata) .")
             return None
 
 def nonBlock_RLDeconvolutionReiknaOCL( data_np, psf_np, *, niter = 10, callbkTickFunc=None):
@@ -236,6 +240,7 @@ def nonBlock_RLDeconvolutionReiknaOCL( data_np, psf_np, *, niter = 10, callbkTic
     This does not use block iteration so large arrays may throw out of memory errors
 
     '''
+    logging.debug("nonBlock_RLDeconvolutionReiknaOCL()")
     
     if data_np.ndim !=3 or psf_np.ndim!=3:
         print ("Data and psf data must be 3 dimensional. Exiting.")
@@ -255,7 +260,8 @@ def block_RLDeconv3DReiknaOCL4(data, psfdata, *, niter=10, max_dim_size=256, psf
     In this version, blockstep is reduced, effectively setting the valid area to a smaller part of the block calculation.
     New parameter psfpaddingfract to set how how much padding relative to psfsize to use
     '''
-    
+    logging.debug("block_RLDeconv3DReiknaOCL4()")
+
     if data.ndim !=3 or psfdata.ndim!=3:
         print ("Data and psf data must be 3 dimensional. Exiting.")
         return None
@@ -276,7 +282,7 @@ def block_RLDeconv3DReiknaOCL4(data, psfdata, *, niter=10, max_dim_size=256, psf
             blockshape0 = shapedata[a]
         blockshape[a] = blockshape0
     
-    print (f"blockshape: {blockshape}")
+    logging.info(f"blockshape: {blockshape}")
 
     #Set step (and padding) from the blockshape and padding being psf size *1.5
     #Valid area being the block size minus the psf size *1.5
@@ -287,7 +293,7 @@ def block_RLDeconv3DReiknaOCL4(data, psfdata, *, niter=10, max_dim_size=256, psf
             validshape[a] = int(blockshape[a] - psfpaddingfract*shapepsf[a])
             blockstep[a] =  validshape[a]
 
-    print (f"blockstep: {blockstep}")
+    logging.info(f"blockstep: {blockstep}")
 
     datares = np.zeros(data.shape) #To collect results
 
@@ -322,15 +328,15 @@ def block_RLDeconv3DReiknaOCL4(data, psfdata, *, niter=10, max_dim_size=256, psf
                     ix00 = ix1 - blockshape[2]
                     if ix00<0: ix00=0
 
-                print(f"New block, intended origin iz0,iy0,ix0 = {iz0},{iy0},{ix0} , use origin iz00,iy00,ix00 = {iz00},{iy00},{ix00} , end iz1,iy1,ix1 = {iz1},{iy1},{ix1}")
+                logging.info(f"New block, intended origin iz0,iy0,ix0 = {iz0},{iy0},{ix0} , use origin iz00,iy00,ix00 = {iz00},{iy00},{ix00} , end iz1,iy1,ix1 = {iz1},{iy1},{ix1}")
 
                 #Get the data block
                 datablock0 = data[iz00:iz1, iy00:iy1, ix00:ix1]
                 
-                print("Start RL deconvolution of this block")
+                logging.info("Start RL deconvolution of this block")
                 #Do RL with this datablock
                 rl_of_datablock = my_rldeconv.doRLDeconvolution(datablock0,niter=niter)
-                print("This block's RL deconvolution completed")
+                logging.info("This block's RL deconvolution completed")
                 
                 #Store the datablock result, only the valid part
                 #unless it is the leftmost (first block) of the dimension given
@@ -346,10 +352,9 @@ def block_RLDeconv3DReiknaOCL4(data, psfdata, *, niter=10, max_dim_size=256, psf
                 if ix0 !=0:
                     jx0 += int( (blockshape[2] - validshape[2]) / 2)
                 
-                print(f"Crop block result from origin jz0,jy0,jx0 = : {jz0},{jy0},{jx0}")
-                #print(f"rl_of_datablock.shape: {rl_of_datablock.shape}")
+                logging.info(f"Crop block result from origin jz0,jy0,jx0 = : {jz0},{jy0},{jx0}")
                 
-                print(f"Copying cropped block to datares")
+                logging.info(f"Copying cropped block to datares")
                 datares[ iz00+jz0 : iz00+rl_of_datablock.shape[0] , iy00+jy0 : iy00+rl_of_datablock.shape[1] , ix00+jx0 : ix00+rl_of_datablock.shape[2]] = rl_of_datablock[jz0: , jy0: , jx0: ]
 
                 if not callbkTickFunc is None:
@@ -361,28 +366,24 @@ def block_RLDeconv3DReiknaOCL4(data, psfdata, *, niter=10, max_dim_size=256, psf
     return datares
     
 
-#Code to run from command line
-def test():
-    #Run tests
-    #TODO
-    print("Not implemented yet")
+def printGPUInfo():
+    if isReiknaAvailable:
+        api = cluda.ocl_api()
 
-def main():
-    import argparse
+        #code from test_reiknaFFT\reikna_getInfo.ipynb
+        devices = api.get_platforms()[0].get_devices()
+        print(f"OpenCL devices: {devices}")
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--test", action='store_true', help="Test the Reikna OCL RL deconvolution algorithm")
+        for i in range(len(devices)):
+            ocldevice = devices[i]
+            print(f"Device {i}: {ocldevice}")
+            print(f"max_work_group_size: {api.DeviceParameters(ocldevice).max_work_group_size}") # max_work_group_size: 1024
+            print(f"max_work_item_sizes: {api.DeviceParameters(ocldevice).max_work_item_sizes}") # max_work_item_sizes: [1024, 1024, 64]
+            print(f"max_num_groups: {api.DeviceParameters(ocldevice).max_num_groups}") # max_num_groups: [18446744073709551616, 18446744073709551616, 18446744073709551616]
+            print(f"local_mem_size: {api.DeviceParameters(ocldevice).local_mem_size}") # local_mem_size: 49152
+            print(f"local_mem_banks: {api.DeviceParameters(ocldevice).local_mem_banks}") # local_mem_banks: 32
 
-    args = parser.parse_args()
-
-    if args.test:
-        #Run the tests
-        test()
-
-if __name__ == "__main__":
-    # Run if called from the command line
-    main()
-
-
-
+        del(api)
+    else:
+        print("No Reikna.")
 

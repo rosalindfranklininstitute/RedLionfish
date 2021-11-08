@@ -1,6 +1,6 @@
-#Testing in local computer using VScode
-import sys
-sys.path.append('../RedLionfishDeconv')
+#Testing in local computer using VScode, without having installed RedLionfish package
+#import sys
+#sys.path.append('..')
 
 #from RedLionfishDeconv import *
 import RedLionfishDeconv as rl
