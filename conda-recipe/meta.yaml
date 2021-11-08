@@ -22,6 +22,12 @@ requirements:
   host: #Specific for to the target platform
     - python
     - pip
+    
+    #Try adding this as installation of the bz2 file is not asking for these dependencies
+    - numpy
+    - scipy
+    - pyopencl
+    - reikna
 
   run: #packages required to run the package, to install automatically when this package is installed using conda install
     - python
