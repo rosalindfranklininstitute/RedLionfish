@@ -32,7 +32,6 @@ Please feel free to browse /test folder for examples.
 Don't forget to `import RedLionfishDeconv` in order to use the functions:
 
 - `def doRLDeconvolutionFromNpArrays(data_np , psf_np ,*, niter=10, method='gpu', useBlockAlgorithm=False, callbkTickFunc=None, resAsUint8 = False) `
-- or run from command line `python RLDeconvolve.py data.tif psf.tif <iter> --out outfile.tif `
 
 ## Build conda package
 
