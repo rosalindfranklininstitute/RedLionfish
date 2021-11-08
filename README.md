@@ -27,11 +27,16 @@ If you want to test and modify the code then you should probably install instead
 
 `python setup.py develop`
 
-### Install using conda environment
+### Install using conda packuage, under conda environment
 
-TODO: Under development.
+Download the appropriate conda package .bz2
 
-Download the conda package .bzp
+In command line, run
+```
+conda install <filename.bz2>
+conda update --all
+```
+Because you are installing from a local file, conda installer will not install dependencies. Right after this you should run the update command given.
 
 ## Coding
 
