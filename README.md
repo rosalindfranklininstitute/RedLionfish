@@ -36,6 +36,8 @@ Don't forget to `import RedLionfishDeconv` in order to use the functions:
 
 ## Build conda package
 
-Navigate to `conda-recipe`.
+Execute command-line `conda-build conda-recipe`
 
-Execute on the command-line `conda build .`. It will take a while to complete.
+or navigate to `conda-recipe`, and execute on the command-line `conda build .`
+
+It will take a while to complete.
