@@ -8,15 +8,11 @@ package:
 source:
   path: ..
 
-#build:
-#  number: 0
-
-  #Not sure this is needed
-  #It appears to be important. If running conda-build --build-only conda-recipe it will not create folder for redlionfish in \miniconda3\envs\dev\conda-bld
-  # build: python -m pip install --no-deps --ignore-installed -vv .
-  #build: python setup.py install
-  
-  #It will run bld.bat anyway
+build:
+  noarch: python
+  number: 1
+  #Script to use if don't want to use the bld.bat or build.sh step
+  #script: python setup.py install
 
 requirements:
   host: #Specific for to the target platform
@@ -29,6 +25,9 @@ requirements:
     - scipy
     - pyopencl
     - reikna
+
+    # for opencl to work correctly in linux, the following package helps. Preprocessing selector is used.
+    - ocl-icd-system # [not win]
 
 test:
   imports:

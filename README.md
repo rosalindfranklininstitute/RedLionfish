@@ -12,6 +12,19 @@ If you wish to do RL using GPU openCL on large data, then the 'block' version is
 
 ## Installation
 
+### Install using conda package, under conda environment (recommended)
+
+Download the appropriate conda package .bz2
+
+In the command line, successively run:
+```
+conda install <filename.bz2>
+conda update --all
+```
+The second line is needed because you are installing from a local file, conda installer will not install dependencies. Right after this you should run the update command given.
+
+### Manual installation (advanced and for developers)
+
 Please note that in order to use OpenCL GPU accelerations, PyopenCL must be installed.
 The best way to get it working is to install it under a conda environment.
 
@@ -27,16 +40,6 @@ If you want to test and modify the code then you should probably install instead
 
 `python setup.py develop`
 
-### Install using conda packuage, under conda environment
-
-Download the appropriate conda package .bz2
-
-In command line, run
-```
-conda install <filename.bz2>
-conda update --all
-```
-Because you are installing from a local file, conda installer will not install dependencies. Right after this you should run the update command given.
 
 ## Coding
 
@@ -44,12 +47,15 @@ Please feel free to browse /test folder for examples.
 
 Don't forget to `import RedLionfishDeconv` in order to use the functions:
 
-- `def doRLDeconvolutionFromNpArrays(data_np , psf_np ,*, niter=10, method='gpu', useBlockAlgorithm=False, callbkTickFunc=None, resAsUint8 = False) `
+`def doRLDeconvolutionFromNpArrays(data_np , psf_np ,*, niter=10, method='gpu', useBlockAlgorithm=False, callbkTickFunc=None, resAsUint8 = False) `
+
+This will do the Richardson-Lucy deconvolution on the data_np (numpy, 3 dimensional data volume) using the provided PSF data volume, for 10 iterations. GPU method is generally faster but it may fail. If it does fail, the program will automatically use the CPU version from scipy.imaging.
 
 
-## Build conda package
 
-Execute command-line `conda-build conda-recipe`
+## Manually building conda package
+
+Execute command-line `conda-build conda-recipe` or `conda-build --output-folder ./conda-built-packages conda-recipe`
 
 or navigate to `conda-recipe`, and execute on the command-line `conda build .`
 
