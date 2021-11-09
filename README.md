@@ -28,7 +28,9 @@ The second line is needed because you are installing from a local file, conda in
 Please note that in order to use OpenCL GPU accelerations, PyopenCL must be installed.
 The best way to get it working is to install it under a conda environment.
 
-`conda install reikna pyopencl ocl-icd-system`
+`conda install reikna pyopencl`
+
+On linux , the package `ocl-icd-system` is also useful.
 
 Run in the command-line, at the unziped RedLionfish folder:
 

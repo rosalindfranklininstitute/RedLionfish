@@ -2,29 +2,7 @@
   "info": {
     "subdir": "win-64"
   },
-  "packages": {
-    "redlionfish-0.2-py38_0.tar.bz2": {
-      "build": "py38_0",
-      "build_number": 0,
-      "depends": [
-        "numpy",
-        "pyopencl",
-        "python >=3.8,<3.9.0a0",
-        "python_abi 3.8.* *_cp38",
-        "reikna",
-        "scipy"
-      ],
-      "license": "BSD-3-Clause",
-      "license_family": "BSD",
-      "md5": "384363f807be3d9970829b52adaf22d7",
-      "name": "redlionfish",
-      "sha256": "4e941467377261b378fb65371e6d4b460944821b8ea28aa40d9a38feb0e00f0f",
-      "size": 20510,
-      "subdir": "win-64",
-      "timestamp": 1636452980891,
-      "version": "0.2"
-    }
-  },
+  "packages": {},
   "packages.conda": {},
   "removed": [],
   "repodata_version": 1
