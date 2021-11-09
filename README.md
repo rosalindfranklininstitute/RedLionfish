@@ -47,7 +47,13 @@ If you want to test and modify the code then you should probably install instead
 
 Please feel free to browse /test folder for examples.
 
-Don't forget to `import RedLionfishDeconv` in order to use the functions:
+Don't forget to add
+
+`import RedLionfishDeconv`
+
+in order to use the functions.
+
+The most useful is perhaps the following.
 
 `def doRLDeconvolutionFromNpArrays(data_np , psf_np ,*, niter=10, method='gpu', useBlockAlgorithm=False, callbkTickFunc=None, resAsUint8 = False) `
 
@@ -57,8 +63,14 @@ This will do the Richardson-Lucy deconvolution on the data_np (numpy, 3 dimensio
 
 ## Manually building conda package
 
-Execute command-line `conda-build conda-recipe` or `conda-build --output-folder ./conda-built-packages conda-recipe`
+Execute command-line
 
-or navigate to `conda-recipe`, and execute on the command-line `conda build .`
+`conda-build conda-recipe`
+
+or
+
+`conda-build --output-folder ./conda-built-packages conda-recipe`
+
+Otherwise, navigate to `conda-recipe`, and execute on the command-line `conda build .`
 
 It will take a while to complete.
