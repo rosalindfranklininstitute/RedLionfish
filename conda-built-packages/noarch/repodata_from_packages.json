@@ -2,29 +2,7 @@
   "info": {
     "subdir": "noarch"
   },
-  "packages": {
-    "redlionfish-0.2-py_1.tar.bz2": {
-      "build": "py_1",
-      "build_number": 1,
-      "depends": [
-        "numpy",
-        "pyopencl",
-        "python",
-        "reikna",
-        "scipy"
-      ],
-      "license": "BSD-3-Clause",
-      "license_family": "BSD",
-      "md5": "ebb2ac9027aeb25b98cbb8884e107809",
-      "name": "redlionfish",
-      "noarch": "python",
-      "sha256": "9d30d561bfe38204abef1d3abe599b3a6506ebb598a29096693f08e3888b20c9",
-      "size": 13602,
-      "subdir": "noarch",
-      "timestamp": 1636454799423,
-      "version": "0.2"
-    }
-  },
+  "packages": {},
   "packages.conda": {},
   "removed": [],
   "repodata_version": 1
