@@ -23,16 +23,18 @@
       "source_git_url": null,
       "source_url": null,
       "subdirs": [
+        "linux-64",
         "win-64"
       ],
       "summary": "Richardson-Lucy deconvolution of 3D data",
       "tags": null,
       "text_prefix": false,
-      "timestamp": 1636457318,
-      "version": "0.2"
+      "timestamp": 1636632157,
+      "version": "0.3"
     }
   },
   "subdirs": [
+    "linux-64",
     "noarch",
     "win-64"
   ]

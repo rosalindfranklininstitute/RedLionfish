@@ -1,0 +1,54 @@
+{
+  "info": {
+    "subdir": "linux-64"
+  },
+  "packages": {
+    "redlionfish-0.2-py38_1.tar.bz2": {
+      "build": "py38_1",
+      "build_number": 1,
+      "depends": [
+        "numpy",
+        "ocl-icd-system",
+        "pyopencl",
+        "python >=3.8,<3.9.0a0",
+        "python_abi 3.8.* *_cp38",
+        "reikna",
+        "scipy"
+      ],
+      "license": "BSD-3-Clause",
+      "license_family": "BSD",
+      "md5": "e9b1b93f18335c66fded01f2eac7d82c",
+      "name": "redlionfish",
+      "sha256": "01ad8ee53c5a92ef9ba23028d88f331f82066abff37416fae538a372e2c14186",
+      "size": 20994,
+      "subdir": "linux-64",
+      "timestamp": 1636631861747,
+      "version": "0.2"
+    },
+    "redlionfish-0.3-py38_1.tar.bz2": {
+      "build": "py38_1",
+      "build_number": 1,
+      "depends": [
+        "numpy",
+        "ocl-icd-system",
+        "pyopencl",
+        "python >=3.8,<3.9.0a0",
+        "python_abi 3.8.* *_cp38",
+        "reikna",
+        "scipy"
+      ],
+      "license": "BSD-3-Clause",
+      "license_family": "BSD",
+      "md5": "929c3a9f1c68930ca852e7f2b6f7c0c7",
+      "name": "redlionfish",
+      "sha256": "f9063689f55303c107bf372667f68ac047e2ef88eda1dd773f4c41f9f92c27f3",
+      "size": 21082,
+      "subdir": "linux-64",
+      "timestamp": 1636632157396,
+      "version": "0.3"
+    }
+  },
+  "packages.conda": {},
+  "removed": [],
+  "repodata_version": 1
+}
