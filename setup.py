@@ -16,7 +16,7 @@ from setuptools import setup
 
 
 setup(
-    version = '0.2',
+    version = '0.3',
     name = 'RedLionfish',
     description = 'Fast Richardson-Lucy deconvolution of 3D volume data using GPU or CPU.',
     url = 'https://github.com/rosalindfranklininstitute/RedLionfish',
@@ -35,5 +35,8 @@ setup(
     install_requires=[
         'numpy',
         'scipy'
-    ]
+    ],
+
+    #for the napari plugin
+    entry_points={'napari.plugin': 'RedLionfish = RedLionfishDeconv.napari_plugin'}
 )

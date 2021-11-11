@@ -1,0 +1,115 @@
+#RedLionfish napari plugin
+
+'''
+Some help designing this collected from diffrent places
+
+https://napari.org/plugins/stable/hook_specifications.html#gui-hooks
+https://github.com/DragaDoncila/example-plugin/blob/main/example_plugin/_dock_widget.py
+These examples show adding widget using decorator @magic_factory.
+This decorator is poorly documented. I don't know how to use it.
+
+
+'''
+from magicgui import magic_factory
+from napari_plugin_engine import napari_hook_implementation
+
+from napari.types import LabelsData, ImageData, LayerDataTuple
+from napari.layers import Image
+
+import RedLionfishDeconv as rl
+
+''' The parameters after the decorator setup the title and other properties of the widget window.
+
+The parameters in the FUNCTION will set the elements that will be shown, but things like comboboxes
+or sliders will have no limits set, this should be done in the decorator.
+
+see also
+https://napari.org/guides/stable/magicgui.html
+
+Note that the @magic_factory and @magicgui behave in similar way.
+'''
+@magic_factory (
+    call_button="Test button0" #,
+    #iterations={'max':100}
+    )
+def test_widget0(
+    data: "ImageData", #Input is data that can be selected
+    psfdata:"ImageData",
+    iterations=10 #User chooses number of RL iterations
+    #useGPU = True #
+    ) -> LabelsData: #Result is data
+    
+    print(f"you have selected {data}")
+
+
+@magic_factory (
+    call_button="Test button1" ,
+    iterations={'max':100}
+    )
+def test_widget1(
+    data: ImageData, #Input is data that can be selected
+    psfdata:ImageData,
+    iterations=10, #User chooses number of RL iterations
+    useGPU = True 
+    ) -> LabelsData: #Result is data
+
+    print("You clicked the button.")
+    print(f"iterations = {iterations}")
+    if not data is None:
+        print(f"data shape = {data.shape}")
+        print(f"type(data) = {type(data)}")
+        print(f"data.dtype = {data.dtype}")
+
+    if not psfdata is None:
+        print(f"psfdata shape = {psfdata.shape}")
+        print(f"type(psfdata) = {type(psfdata)}")
+        print(f"psfdata.dtype = {psfdata.dtype}")
+
+
+#Really basic
+@magic_factory (call_button="Test button2")
+def test_widget2(img_layer: Image):
+    print(f"you have selected {img_layer}")
+
+
+#The widget
+@magic_factory (
+    call_button="Go" ,
+    iterations={'max':100} 
+    )
+def RedLionfish_widget(
+    data: ImageData, #Input is data that can be selected
+    psfdata:ImageData,
+    iterations=10, #User chooses number of RL iterations
+    useGPU = True 
+    ) -> LayerDataTuple: #Result is a LayerDataTuple, like (data, {dict_properties})
+
+    print(f"iterations = {iterations}")
+
+    ret = None
+
+    datares_uint8=None
+    if not data is None and not psfdata is None:
+        #Print information before calculation
+        print(f"data.shape = {data.shape} , type(data) = {type(data)} , data.dtype = {data.dtype}")
+        print(f"psfdata.shape = {psfdata.shape} , type(psfdata) = {type(psfdata)} , psfdata.dtype = {psfdata.dtype}")
+        
+        if data.ndim==3 and psfdata.ndim==3: #For now, only 3D is supported
+            method = 'cpu' #Default
+            if useGPU:
+                method='gpu'
+            #Run the deconvolution
+            datares_uint8 = rl.doRLDeconvolutionFromNpArrays(data, psfdata, niter= iterations, method = method ,resAsUint8=True ) #TODO: check resAsUint8 is appropriate
+
+            ret = ( datares_uint8 , { 'name':'RL-deconvolution'})
+
+    return ret
+
+
+
+
+@napari_hook_implementation
+def napari_experimental_provide_dock_widget():
+    # you can return either a single widget, or a sequence of widgets
+    #return [test_widget0, test_widget1]
+    return [RedLionfish_widget,test_widget2, test_widget1]
