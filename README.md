@@ -63,14 +63,21 @@ This will do the Richardson-Lucy deconvolution on the data_np (numpy, 3 dimensio
 
 ## Manually building conda package
 
-Execute command-line
+You may need to ensure all packages are installed. For this installation, ensure that the conda-build package is installed
+
+`conda install conda-build`
+
+
+Then, execute command-line to create the installation package for RedLionfish
 
 `conda-build conda-recipe`
 
 or
 
-`conda-build --output-folder ./conda-built-packages conda-recipe`
+`conda-build --output-folder ./conda-built-packages -c conda-forge conda-recipe`
 
 Otherwise, navigate to `conda-recipe`, and execute on the command-line `conda build .`
+
+The conda channel conda-forge is important for the installation of reikna and pyopencl, as these are not available in base channels.
 
 It will take a while to complete.
