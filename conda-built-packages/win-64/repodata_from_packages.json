@@ -3,7 +3,7 @@
     "subdir": "win-64"
   },
   "packages": {
-    "redlionfish-0.2-py38_1.tar.bz2": {
+    "redlionfish-0.3-py38_1.tar.bz2": {
       "build": "py38_1",
       "build_number": 1,
       "depends": [
@@ -14,15 +14,14 @@
         "reikna",
         "scipy"
       ],
-      "license": "BSD-3-Clause",
-      "license_family": "BSD",
-      "md5": "5ef608b5923a5da84a6f8c11e119196d",
+      "license": "Apache License, Version 2.0",
+      "md5": "997dc3cb53cec622b78f4a7a7097fd5e",
       "name": "redlionfish",
-      "sha256": "7a22e6d7a3e2b1482d90a50381061e92ec426ea03e39f01dbe536e72372d1895",
-      "size": 20513,
+      "sha256": "381e3786c82b3e7ecd58add9112c1c6b57107802b1eaed66e73a7aae4532138f",
+      "size": 26407,
       "subdir": "win-64",
-      "timestamp": 1636457318331,
-      "version": "0.2"
+      "timestamp": 1636646644361,
+      "version": "0.3"
     }
   },
   "packages.conda": {},

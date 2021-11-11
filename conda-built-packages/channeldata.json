@@ -14,7 +14,7 @@
       "icon_url": null,
       "identifiers": null,
       "keywords": null,
-      "license": "BSD-3-Clause",
+      "license": "Apache License, Version 2.0",
       "post_link": false,
       "pre_link": false,
       "pre_unlink": false,
@@ -23,18 +23,16 @@
       "source_git_url": null,
       "source_url": null,
       "subdirs": [
-        "linux-64",
         "win-64"
       ],
       "summary": "Richardson-Lucy deconvolution of 3D data",
       "tags": null,
       "text_prefix": false,
-      "timestamp": 1636632157,
+      "timestamp": 1636646644,
       "version": "0.3"
     }
   },
   "subdirs": [
-    "linux-64",
     "noarch",
     "win-64"
   ]

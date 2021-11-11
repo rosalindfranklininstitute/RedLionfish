@@ -38,6 +38,6 @@ test:
 
 about:
   home: https://github.com/rosalindfranklininstitute/RedLionfish
-  license: BSD-3-Clause
-  license_family: BSD
+  license: Apache License, Version 2.0
+  license_file: LICENSE
   summary: Richardson-Lucy deconvolution of 3D data
