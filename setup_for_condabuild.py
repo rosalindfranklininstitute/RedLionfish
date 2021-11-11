@@ -1,7 +1,7 @@
-"""
+'''
 Copyright (C) 2021 Rosalind Franklin Institute
 
-"""
+'''
 
 
 from setuptools import setup, find_packages
@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 
 
 setup(
-    version = '0.2',
+    version = '0.3',
     name = 'RedLionfish',
     description = 'Fast Richardson-Lucy deconvolution of 3D volume data using GPU or CPU.',
     url = 'https://github.com/rosalindfranklininstitute/RedLionfish',
@@ -28,5 +28,8 @@ setup(
     zip_safe=False,
     install_requires=[
         
-    ]
+    ] ,
+
+    #for the napari plugin
+    entry_points={'napari.plugin': 'RedLionfish = RedLionfishDeconv.napari_plugin'}
 )

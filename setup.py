@@ -4,10 +4,10 @@ print("The best way to install PyOpenCL+Reikna  in a python environment is by us
 print("See more information here: https://documen.tician.de/pyopencl/misc.html")
 print("If PyOpenCL+Reikna are not available, it can still run but it will use CPU scipy FFT routines instead which can be slow.")
 
-"""
+'''
 Copyright (C) 2021 Rosalind Franklin Institute
 
-"""
+'''
 
 
 from setuptools import setup
