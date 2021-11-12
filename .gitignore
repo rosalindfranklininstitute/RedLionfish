@@ -4,3 +4,4 @@ RedLionfish.egg-info/
 *.py[cod]
 .cache/
 
+*.spec
