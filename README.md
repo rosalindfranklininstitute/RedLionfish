@@ -19,7 +19,7 @@ Download the appropriate conda package .bz2
 In the command line, successively run:
 ```
 conda install <filename.bz2>
-conda update --all
+conda update --all -c conda-forge
 ```
 The second line is needed because you are installing from a local file, conda installer will not install dependencies. Right after this you should run the update command given.
 
