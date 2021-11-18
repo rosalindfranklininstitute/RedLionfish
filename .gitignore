@@ -4,4 +4,4 @@ RedLionfish.egg-info/
 *.py[cod]
 .cache/
 
-test/test_and_benchm.spec
+*.spec

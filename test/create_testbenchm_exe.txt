@@ -1,0 +1,11 @@
+Ensure that RedLionfish and pyinstaller are installed before running the command below
+
+> pyinstaller test_and_benchm.py --onefile
+Does not work, executable fails to find Reikna
+
+Check with 
+> pyinstaller test_and_benchm.py --debug=imports
+No success, program runs but cannot find .mako files.
+
+Run
+> create_testbenchm_exe_script.bat
