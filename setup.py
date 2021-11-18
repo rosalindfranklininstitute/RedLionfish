@@ -29,6 +29,7 @@ setup(
         'Natural Language :: English',
         'Programming Language :: Python :: 3.8',
         'Operating System :: Windows :: POSIX :: Linux :: MacOS',
+        'Framework :: napari'
     ],
     license='Apache License, Version 2.0',
     zip_safe=False,
