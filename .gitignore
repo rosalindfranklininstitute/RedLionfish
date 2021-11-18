@@ -5,3 +5,4 @@ RedLionfish.egg-info/
 .cache/
 
 *.spec
+conda-built-packages/
