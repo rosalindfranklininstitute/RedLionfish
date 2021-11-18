@@ -18,7 +18,7 @@ from setuptools import setup
 setup(
     version = '0.3',
     name = 'RedLionfish',
-    description = 'Fast Richardson-Lucy deconvolution of 3D volume data using GPU or CPU.',
+    description = 'Fast Richardson-Lucy deconvolution of 3D volume data using GPU or CPU with napari plugin.',
     url = 'https://github.com/rosalindfranklininstitute/RedLionfish',
     author = 'Luis Perdigao',
     author_email='luis.perdigao@rfi.ac.uk',
