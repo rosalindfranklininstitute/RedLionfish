@@ -104,7 +104,7 @@ for iz in range(int(cubespacing/2) ,datashape[0],cubespacing):
         for ix in range(int(cubespacing/2) ,datashape[2],cubespacing):
             data[iz:iz+cubesize , iy:iy+cubesize , ix:ix+cubesize] = np.ones((cubesize,cubesize,cubesize))
 
-print("Convoluting, using scipy.signal")
+print("Convoluting 3D data with the psf, using scipy.signal")
 data_convolved = scipy.signal.convolve(data, datapsf, mode='same')
 #Normalises it to range 0-255
 data_convolved = (data_convolved - data_convolved.min()) / (data_convolved.max() - data_convolved.min())*255
