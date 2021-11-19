@@ -4,6 +4,7 @@
 #And then set the psf
 #And then run
 
+import logging
 #This could be useful to check all ok before trying to run GPU accelerated code
 # If not, user can fallback to CPU version using scipy
 isReiknaAvailable = False
@@ -18,8 +19,8 @@ try:
     del(apitest)
 
 except Exception as e:
-    print("Failed to setup Reikna with OpenCL.")
-    print(e)
+    logging.error("Failed to setup Reikna with OpenCL.")
+    logging.error(e)
     isReiknaAvailable=False
 
 import logging
@@ -51,7 +52,7 @@ class RLDeconv3DReiknaOCL:
         devparam = self.api.DeviceParameters(ocldevice)
         maxsize = devparam.max_work_item_sizes
         if np.product(np.array(shape)) > np.product(np.array(maxsize)):
-            print ("Shape is too large")
+            logging.info("Shape is too large")
             raise ValueError("Shape is too large.")
 
         dtype=np.complex64 #Reikna fft only works with complex types
@@ -243,7 +244,7 @@ def nonBlock_RLDeconvolutionReiknaOCL( data_np, psf_np, *, niter = 10, callbkTic
     logging.debug("nonBlock_RLDeconvolutionReiknaOCL()")
     
     if data_np.ndim !=3 or psf_np.ndim!=3:
-        print ("Data and psf data must be 3 dimensional. Exiting.")
+        logging.error ("Data and psf data must be 3 dimensional. Exiting.")
         return None
     
     data = convertToFloat32AndNormalise(data_np,None,bResetZero=False)
@@ -360,7 +361,7 @@ def block_RLDeconv3DReiknaOCL4(data, psfdata, *, niter=10, max_dim_size=256, psf
                 if not callbkTickFunc is None:
                     callbkTickFunc()
 
-    print ("Completed block RL deconvolution.")
+    logging.info("Completed block RL deconvolution.")
 
     #Hopefully, at this point, datares should have the final result of the blocked RL deconvolution
     return datares

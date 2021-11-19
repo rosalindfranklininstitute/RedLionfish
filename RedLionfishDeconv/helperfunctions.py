@@ -1,4 +1,5 @@
 import numpy as np
+import logging
 
 #Helper function
 def change3DSizeTo(data, shape):
@@ -93,7 +94,7 @@ def convertToFloat32AndNormalise(data, normaliseType=None, bResetZero=True):
             normcorr = np.sum(ret)
         #Check for zero before division
         if normcorr==0.0:
-            print("normcorr = 0. Normalisation will be skipped to prevent division by zero.")
+            logging.info("normcorr = 0. Normalisation will be skipped to prevent division by zero.")
         ret = ret/normcorr
     return ret
 
