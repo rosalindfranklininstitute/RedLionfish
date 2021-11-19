@@ -1,4 +1,5 @@
-print ("Please note this software can use GPU accelation using PyOpenCL and Reikna.")
+print("Note this software can use GPU accelation using PyOpenCL and Reikna.")
+print("Please install these packages seperately.")
 print("The PyOpenCL package available through pip may not install correctly and/or provide access to GPU.")
 print("The best way to install PyOpenCL+Reikna in a python environment is by using anaconda/conda envirnonments.")
 print("See more information here: https://documen.tician.de/pyopencl/misc.html")
@@ -24,11 +25,14 @@ setup(
     author_email='luis.perdigao@rfi.ac.uk',
     packages=['RedLionfishDeconv'],
     classifiers=[
-        'Development Status :: ok ',
+        'Development Status :: 4 - Beta ',
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
         'Programming Language :: Python :: 3.8',
-        'Operating System :: Windows :: POSIX :: Linux :: MacOS',
+        'Operating System :: Microsoft :: Windows',
+        'Operating System :: MacOS',
+        'Operating System :: POSIX :: Linux',
+        'Topic :: Scientific/Engineering :: Image Processing'
         'Framework :: napari'
     ],
     license='Apache License, Version 2.0',
