@@ -1,5 +1,5 @@
 {% set name = "RedLionfish" %}
-{% set version = "0.3" %}
+{% set version = "0.4" %}
 
 package:
   name: "{{ name|lower }}"
@@ -12,7 +12,7 @@ build:
   #Definining no architecture will mean that ocl-icd-system will never get installed in linux
   #Need to manually create package in the linux
   #noarch: python
-  number: 1
+  number: 0
   
   #Script to use if don't want to use the bld.bat or build.sh step
   #script: python setup.py install
