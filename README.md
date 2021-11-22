@@ -19,28 +19,38 @@ If data is too big for doing GPU deconvolution, it will do the calculation in bl
 ## Installation
 
 It is strongly recommended to install this package under a python anaconda or miniconda environment.
-This is because some calculations use PyOpenCL, and this is best installed using `conda install` rather than `pip install`.
+This is because some calculations use PyOpenCL, and this is best installed in a conda environment.
 
-It is also possible to install using *pip* and it can still do deconvolution, however the code may fail to use GPU.
+```
+conda install reikna pyopencl -c conda-forge
+pip install redlionfish
+```
 
-It also has a napari plugin. It can be installed by using the napari plugin installer, however this will not enable GPU acceleration.
-As above, to best exploit GPU acceleration, it is recommended to install using Anaconda/conda.
+In Linux , the package `ocl-icd-system` is also useful.
+
+```
+conda install reikna pyopencl ocl-icd-system -c conda-forge
+pip install redlionfish
+```
+
+
+## Napari plugin
+
+If you follow the installation instructions above, and install the napari in the same conda environment
+then the plugin should be immediately available in the *Menu -> Plugins -> RedLionfish*.
+
+Alternatively, you can use the Napari's plugin installation in *Menu -> Plugins -> Install/Uninstall Plugins...*.
+If you chose to use this method, GPU acceleration will not be available and it will use the CPU backend.
+
 
 ### Anaconda/miniconda installation
 
-TODO
-`
-conda install RedLionfish
-`
-
-and it should be ready to use.
-
-If you have installed napari in this conda environment and launch it, the napari-redlionfish plugin should be available in the plugin menu.
+At the moment of this writting this package is NOT AVAILABLE available in conda-forge but is under progress.
 
 
-#### Manual installation using the conda package.
+#### Manual installation using the conda package file.
 
-Download the appropriate conda package .bz2
+Download the appropriate conda package .bz2 at [https://github.com/rosalindfranklininstitute/RedLionfish/releases](https://github.com/rosalindfranklininstitute/RedLionfish/releases)
 
 In the command line, successively run:
 ```
@@ -57,14 +67,16 @@ The best way to get it working is to install it under a conda environment.
 
 `conda install reikna pyopencl`
 
-On linux , the package `ocl-icd-system` is also useful.
+or
+`conda install reikna pyopencl ocl-icd-system -c conda-forge` (Linux)
 
-Run in the command-line, at the unziped RedLionfish folder:
+Clone/donload from source [https://github.com/rosalindfranklininstitute/RedLionfish/](https://github.com/rosalindfranklininstitute/RedLionfish/)
+
+and run
 
 `python setup.py install`
 
-or download and place in appropriate folder ready to be used. Make sure that it is reachable by python.
-
+### Debug
 If you want to test and modify the code then you should probably install instead using:
 
 `python setup.py develop`
@@ -90,21 +102,21 @@ This will do the Richardson-Lucy deconvolution on the data_np (numpy, 3 dimensio
 
 ## Manually building the conda package
 
-You may need to ensure all packages are installed. For this installation, ensure that the conda-build package is installed
+For this installation, ensure that the conda-build package is installed
 
 `conda install conda-build`
 
+In windows, simply execute
 
-Then, execute command-line to create the installation package for RedLionfish
+`conda-create-package.bat`
 
-`conda-build conda-recipe`
 
-or
+Or, execute the command-line to create the installation package for RedLionfish
 
 `conda-build --output-folder ./conda-built-packages -c conda-forge conda-recipe`
 
-Otherwise, navigate to `conda-recipe`, and execute on the command-line `conda build .`
+and the conda package will be created in folder *conda-built-packages*.
 
-The conda channel conda-forge is important for the installation of reikna and pyopencl, as these are not available in base channels.
+Otherwise, navigate to `conda-recipe`, and execute on the command-line `conda build .`
 
 It will take a while to complete.
