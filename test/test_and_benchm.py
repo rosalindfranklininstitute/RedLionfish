@@ -20,6 +20,7 @@ print("import RedLionfishDeconv succeeded")
 #Get OpenCL information
 print("Checking RLDeconv3DReiknaOCL")
 import RedLionfishDeconv.RLDeconv3DReiknaOCL as rlfocl
+import RedLionfishDeconv.helperfunctions
 rlfocl.printGPUInfo()
 
 #Run a deconvolution
@@ -39,21 +40,7 @@ for iz in range(int(cubespacing/2) ,datashape[0],cubespacing):
 
 print("Generating PSF data.")
 
-def generateGaussPSF():
-    shape = (32,32,32)
-    z_mg = np.linspace(-1,1,shape[0], dtype=np.float32)
-    y_mg = np.linspace(-1,1,shape[0], dtype=np.float32)
-    x_mg = np.linspace(-1,1,shape[0], dtype=np.float32)
-
-    z_mg, y_mg, x_mg = np.meshgrid( z_mg, y_mg, x_mg)
-
-    sigma = 0.2
-
-    data = 1/sigma/math.sqrt(2*math.pi) * np.exp( -0.5 * ( np.square(z_mg) + np.square(y_mg) + np.square(x_mg) ) / sigma/sigma )
-
-    return data
-
-datapsf = generateGaussPSF()
+datapsf = RedLionfishDeconv.helperfunctions.generateGaussPSF( (32,32,32) )
 
 print("Convoluting, using scipy.signal")
 import scipy.signal

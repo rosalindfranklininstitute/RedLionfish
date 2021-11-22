@@ -1,5 +1,6 @@
 import numpy as np
 import logging
+import math
 
 #Helper function
 def change3DSizeTo(data, shape):
@@ -95,7 +96,8 @@ def convertToFloat32AndNormalise(data, normaliseType=None, bResetZero=True):
         #Check for zero before division
         if normcorr==0.0:
             logging.info("normcorr = 0. Normalisation will be skipped to prevent division by zero.")
-        ret = ret/normcorr
+        else:
+            ret = ret/normcorr
     return ret
 
 def convertToUint8AndFullRange(data):
@@ -105,3 +107,17 @@ def convertToUint8AndFullRange(data):
     res_256 = convertToFloat32AndNormalise(data, normaliseType='max', bResetZero=True)*256
     res_uint8 = res_256.astype('uint8')
     return res_uint8
+
+def generateGaussPSF(shape):
+    #shape = (32,32,32)
+    z_mg = np.linspace(-shape[0],shape[0] ,shape[0], dtype=np.float32)
+    y_mg = np.linspace(-shape[1],shape[1] ,shape[1], dtype=np.float32)
+    x_mg = np.linspace(-shape[2],shape[2] ,shape[2], dtype=np.float32)
+
+    z_mg, y_mg, x_mg = np.meshgrid( z_mg, y_mg, x_mg)
+
+    sigma = 5
+
+    data = 1/sigma/math.sqrt(2*math.pi) * np.exp( -0.5 * ( np.square(z_mg) + np.square(y_mg) + np.square(x_mg) ) / sigma/sigma )
+
+    return data

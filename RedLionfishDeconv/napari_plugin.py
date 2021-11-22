@@ -18,6 +18,9 @@ from napari.layers import Image
 
 import RedLionfishDeconv as rl
 
+import logging
+logging.basicConfig(level=logging.INFO)
+
 ''' The parameters after the decorator setup the title and other properties of the widget window.
 
 The parameters in the FUNCTION will set the elements that will be shown, but things like comboboxes

@@ -1,7 +1,7 @@
 #Several versions of Richardson-Lucy deconvolution using scipy.signal convolution
 
 import numpy as np
-import scipy.signal
+import scipy.fft
 
 from .helperfunctions import *
 
@@ -84,9 +84,19 @@ def doRLDeconvolution_DL2_4(data_np , psf_np ,*, niter=10, callbkTickFunc=None):
     # but that is not true, as code tests proved (tests.ipynb)
     # In this version, as in the original formula for RL, the flipped psf is used for the second convolution
     # (see tests.ipynb)
-        
+    
     #Convert and normalise
     data_np_norm =convertToFloat32AndNormalise(data_np) #don't normalise
+
+    #Check last axis is even size, otherwise it will give error
+    if data_np_norm.shape[-1] %2 != 0: #odd number
+        logging.info("Data last axis size is an odd number. Padding with zeros to make size even to prevent errors")
+        s = data_np_norm.shape
+        shape_fix = (s[0], s[1], s[2]+1)
+        data_fix = np.empty(shape_fix, dtype = data_np_norm.dtype)
+        data_fix[:,:,:-1] = data_np_norm[:,:,:]
+        data_fix[:,:,-1] = 0
+        data_np_norm = data_fix
 
     # psf_norm = psf0/sum#
     psf_norm = convertToFloat32AndNormalise(psf_np, normaliseType='sum',bResetZero=False)

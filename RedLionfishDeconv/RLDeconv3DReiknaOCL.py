@@ -50,9 +50,10 @@ class RLDeconv3DReiknaOCL:
         #TODO:check shape is not too large
         ocldevice = self.api.get_platforms()[0].get_devices()[0] #Get first device available
         devparam = self.api.DeviceParameters(ocldevice)
-        maxsize = devparam.max_work_item_sizes
-        if np.product(np.array(shape)) > np.product(np.array(maxsize)):
-            logging.info("Shape is too large")
+        self.maxsize = devparam.max_work_item_sizes
+
+        if np.product(np.array(shape)) > np.product(np.array(self.maxsize)):
+            logging.error(f"Shape {shape} is too large for OpenCL device shape limits {self.maxsize}")
             raise ValueError("Shape is too large.")
 
         dtype=np.complex64 #Reikna fft only works with complex types
@@ -234,6 +235,16 @@ class RLDeconv3DReiknaOCL:
         else:
             logging.error("Psf was not set. Please set it by doing .setPSF(psfdata) .")
             return None
+    
+    @staticmethod
+    def getDefaultDeviceMaxSize():
+        api = cluda.ocl_api()
+
+        ocldevice = api.get_platforms()[0].get_devices()[0] #Get first device available
+        devparam = api.DeviceParameters(ocldevice)
+        maxsize = devparam.max_work_item_sizes
+        del(api)
+        return maxsize
 
 def nonBlock_RLDeconvolutionReiknaOCL( data_np, psf_np, *, niter = 10, callbkTickFunc=None):
     '''
@@ -255,7 +266,21 @@ def nonBlock_RLDeconvolutionReiknaOCL( data_np, psf_np, *, niter = 10, callbkTic
     
     return myRL_Reikna.doRLDeconvolution(data, niter=niter, callbkTickFunc=callbkTickFunc)
 
+def _isShapeTooBigForDevice(shape):
+    ret=False
+    
+    maxsize = RLDeconv3DReiknaOCL.getDefaultDeviceMaxSize()
 
+    mult_maxsize= np.product(np.array(maxsize))
+    mult_shape = np.product(np.array(shape))
+
+    if mult_shape>mult_maxsize:
+        ret=True
+
+    return ret
+
+
+#Default
 def block_RLDeconv3DReiknaOCL4(data, psfdata, *, niter=10, max_dim_size=256, psfpaddingfract = 1.2, callbkTickFunc=None):
     '''
     In this version, blockstep is reduced, effectively setting the valid area to a smaller part of the block calculation.
@@ -264,9 +289,14 @@ def block_RLDeconv3DReiknaOCL4(data, psfdata, *, niter=10, max_dim_size=256, psf
     logging.debug("block_RLDeconv3DReiknaOCL4()")
 
     if data.ndim !=3 or psfdata.ndim!=3:
-        print ("Data and psf data must be 3 dimensional. Exiting.")
-        return None
+        logging.error("Data and psf data must be 3 dimensional. Exiting.")
+        raise ValueError("Data or psf are not 3D")
     
+    #Check psf size is not too large for the GPU calculation
+    if _isShapeTooBigForDevice(psfdata.shape):
+        logging.error("PSF data shape is too large. Exiting.")
+        raise ValueError("Psf data shape is too large")
+
     data = convertToFloat32AndNormalise(data)
 
     shapedata = data.shape
@@ -285,18 +315,25 @@ def block_RLDeconv3DReiknaOCL4(data, psfdata, *, niter=10, max_dim_size=256, psf
     
     logging.info(f"blockshape: {blockshape}")
 
+    #check if shape is too large
+    if _isShapeTooBigForDevice(blockshape):
+        logging.error("blockshape is too large. Exiting.")
+        raise ValueError("blockshape is too large")
+
     #Set step (and padding) from the blockshape and padding being psf size *1.5
     #Valid area being the block size minus the psf size *1.5
     blockstep = list(shapedata) #default, makes a copy
     validshape = list(shapedata)
     for a in range(3):
-        if blockshape[a]< shapedata[a]:
-            validshape[a] = int(blockshape[a] - psfpaddingfract*shapepsf[a])
+        v0 = int(blockshape[a] - psfpaddingfract*shapepsf[a])
+        if blockshape[a]< shapedata[a] and v0>0:
+            validshape[a] = v0
             blockstep[a] =  validshape[a]
 
     logging.info(f"blockstep: {blockstep}")
 
     datares = np.zeros(data.shape) #To collect results
+
 
     #Setup Reikna RL Deconv Class to use this shape
     my_rldeconv = RLDeconv3DReiknaOCL(blockshape)
