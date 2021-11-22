@@ -30,7 +30,7 @@ def doRLDeconvolutionFromNpArrays(data_np , psf_np ,*, niter=10, method='gpu', u
     '''
     from RedLionfishDeconv import helperfunctions
 
-    logging.debug(f"doRLDeconvolutionFromNpArrays(), niter={niter} , method={method} , useBlockAlgorithm={useBlockAlgorithm}, resAsUint8={resAsUint8}")
+    logging.info(f"doRLDeconvolutionFromNpArrays(), niter={niter} , method={method} , useBlockAlgorithm={useBlockAlgorithm}, resAsUint8={resAsUint8}")
 
     resRL = None
 
@@ -41,6 +41,7 @@ def doRLDeconvolutionFromNpArrays(data_np , psf_np ,*, niter=10, method='gpu', u
             if not useBlockAlgorithm:
                 #Use standard RL OCL version
                 try:
+                    logging.info("Try using the non-block deconvolution algorithm")
                     resRL = rlreikna.nonBlock_RLDeconvolutionReiknaOCL(data_np, psf_np, niter=niter, callbkTickFunc=callbkTickFunc)
                 except Exception as e:
                     #Probably out of memory error, fallback to block algorithm

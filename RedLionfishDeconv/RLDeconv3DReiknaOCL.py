@@ -126,7 +126,7 @@ class RLDeconv3DReiknaOCL:
     def setPSF(self,psfdata):
         #Prepare data
         #Convert to float, normalise to sum, calculate fft's and of flipped version
-        logging.debug("setPSF()")
+        logging.info("setPSF()")
 
         psf_norm = convertToFloat32AndNormalise(psfdata , normaliseType='sum', bResetZero=False) #Normalise to sum
         psf0 = change3DSizeTo(psf_norm, self.shape) #Adjust size
@@ -159,7 +159,7 @@ class RLDeconv3DReiknaOCL:
         returns the Deconvoluted data volume, only the real part (float32 format)
         '''
         
-        logging.debug("doRLDeconvolution()")
+        logging.info("doRLDeconvolution()")
 
         #Check data and shape are consistent
         if data_np.shape[0] != self.shape[0] or data_np.shape[1] != self.shape[1] or data_np.shape[2] != self.shape[2]:
@@ -252,7 +252,7 @@ def nonBlock_RLDeconvolutionReiknaOCL( data_np, psf_np, *, niter = 10, callbkTic
     This does not use block iteration so large arrays may throw out of memory errors
 
     '''
-    logging.debug("nonBlock_RLDeconvolutionReiknaOCL()")
+    logging.info("nonBlock_RLDeconvolutionReiknaOCL()")
     
     if data_np.ndim !=3 or psf_np.ndim!=3:
         logging.error ("Data and psf data must be 3 dimensional. Exiting.")
@@ -286,7 +286,7 @@ def block_RLDeconv3DReiknaOCL4(data, psfdata, *, niter=10, max_dim_size=256, psf
     In this version, blockstep is reduced, effectively setting the valid area to a smaller part of the block calculation.
     New parameter psfpaddingfract to set how how much padding relative to psfsize to use
     '''
-    logging.debug("block_RLDeconv3DReiknaOCL4()")
+    logging.info("block_RLDeconv3DReiknaOCL4()")
 
     if data.ndim !=3 or psfdata.ndim!=3:
         logging.error("Data and psf data must be 3 dimensional. Exiting.")

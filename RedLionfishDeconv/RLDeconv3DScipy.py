@@ -4,6 +4,7 @@ import numpy as np
 import scipy.fft
 
 from .helperfunctions import *
+import logging
 
 def doRLDeconvolution12(data_np , psf_np , *, niter=10, callbkTickFunc=None):
     #RL deconvolution based on doRLDeconvolution11()
@@ -68,7 +69,7 @@ def doRLDeconvolution12(data_np , psf_np , *, niter=10, callbkTickFunc=None):
     return data_deconv_uint8
 
 
-
+#default
 def doRLDeconvolution_DL2_4(data_np , psf_np ,*, niter=10, callbkTickFunc=None):
     #RL deconvolution based in DeconvolutionLab2 with optional parameter for normalising inputs
     #Mimics DeconvolutionLab2 (DL2) as best as possible
@@ -85,6 +86,7 @@ def doRLDeconvolution_DL2_4(data_np , psf_np ,*, niter=10, callbkTickFunc=None):
     # In this version, as in the original formula for RL, the flipped psf is used for the second convolution
     # (see tests.ipynb)
     
+    logging.info("doRLDeconvolution_DL2_4() (CPU)")
     #Convert and normalise
     data_np_norm =convertToFloat32AndNormalise(data_np) #don't normalise
 
