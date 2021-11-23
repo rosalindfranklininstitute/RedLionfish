@@ -2,7 +2,6 @@
 
 #TODO: A lot of these parameters can be passed as **kwargs.
 #TODO: Test GPU acceleration on MacOS
-#TODO: Convert print() to logging.info
 #TODO: Consider open files using scipy.imread rather than the tifffile modules
 
 

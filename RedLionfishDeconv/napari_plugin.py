@@ -104,14 +104,13 @@ def RedLionfish_widget(
             if useGPU:
                 method='gpu'
             #Run the deconvolution
-            datares_uint8 = rl.doRLDeconvolutionFromNpArrays(data, psfdata, niter= iterations, method = method ,resAsUint8=True ) #TODO: check resAsUint8 is appropriate
+            datares_uint8 = rl.doRLDeconvolutionFromNpArrays(data, psfdata, niter= iterations, method = method ,resAsUint8=True )
 
             ret = ( datares_uint8 , { 'name':'RL-deconvolution'})
         else:
             print("Data or PSF is not 3-dimensional.")
 
     return ret
-
 
 
 

@@ -9,9 +9,7 @@ The method was originally developed for astronomy, to remove optical effects and
 
 [Lucy, L. B. An iterative technique for the rectification of observed distributions. The Astronomical Journal 79, 745 (1974). DOI: 10.1086/111605](https://ui.adsabs.harvard.edu/abs/1974AJ.....79..745L/abstract)
 
-TODO: More description
-
-It has a version that runs on CPU (scikit) and another that runs on GPU using OpenCL through Reikna library.
+It has a version that runs on CPU and another that runs on GPU using OpenCL through Reikna library.
 By default it uses the GPU OpenCL version.
 If data is too big for doing GPU deconvolution, it will do the calculation in blocks, therefore preventing memory issues.
 
@@ -45,8 +43,8 @@ If you chose to use this method, GPU acceleration will not be available and it w
 
 ### Anaconda/miniconda installation
 
-At the moment of this writting this package is NOT AVAILABLE available in conda-forge but is under progress.
-
+At the moment of this writting this package is NOT AVAILABLE available yet in conda-forge.
+This work is under progress.
 
 #### Manual installation using the conda package file.
 

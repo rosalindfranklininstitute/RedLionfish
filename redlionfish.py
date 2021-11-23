@@ -1,7 +1,7 @@
 #To be run from the command line
 #It needs to be a seperate file otherwise the imports will fail
 
-__version__ = "0.3"
+__version__ = "0.5"
 
 # Ability to run from command line providing tiff (or other) filenames
 def main():

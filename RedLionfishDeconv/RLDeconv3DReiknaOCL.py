@@ -47,11 +47,11 @@ class RLDeconv3DReiknaOCL:
         self.api = cluda.ocl_api()
         self.thr = self.api.Thread.create()
 
-        #TODO:check shape is not too large
         ocldevice = self.api.get_platforms()[0].get_devices()[0] #Get first device available
         devparam = self.api.DeviceParameters(ocldevice)
         self.maxsize = devparam.max_work_item_sizes
 
+        #check shape is not too large
         if np.product(np.array(shape)) > np.product(np.array(self.maxsize)):
             logging.error(f"Shape {shape} is too large for OpenCL device shape limits {self.maxsize}")
             raise ValueError("Shape is too large.")

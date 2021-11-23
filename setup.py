@@ -12,10 +12,18 @@ Copyright (C) 2021 Rosalind Franklin Institute
 
 from setuptools import setup
 
+
+# read the contents of your README file
+from pathlib import Path
+this_directory = Path(__file__).parent
+long_description = (this_directory / "README.md").read_text()
+
 setup(
-    version = '0.4',
+    version = '0.5',
     name = 'RedLionfish',
     description = 'Fast Richardson-Lucy deconvolution of 3D volume data using GPU or CPU with napari plugin.',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     url = 'https://github.com/rosalindfranklininstitute/RedLionfish',
     author = 'Luis Perdigao',
     author_email='luis.perdigao@rfi.ac.uk',
