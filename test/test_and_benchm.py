@@ -54,7 +54,7 @@ data_convolved_noised = rng.poisson(lam = data_convolved)
 
 data_convolved_noised_uint8 = ((data_convolved_noised - data_convolved_noised.min()) / ( data_convolved_noised.max() - data_convolved_noised.min() ) *255 ).astype(np.uint8)
 
-niter = 5
+niter = 10
 
 print(f"RL deconvolution, niter = {niter}")
 
@@ -62,14 +62,14 @@ import time
 print("CPU")
 
 t0 = time.time()
-res_CPU = rl.RLDeconvolve.doRLDeconvolutionFromNpArrays(data_convolved_noised_uint8, datapsf, niter=10, method='cpu')
+res_CPU = rl.RLDeconvolve.doRLDeconvolutionFromNpArrays(data_convolved_noised_uint8, datapsf, niter=niter, method='cpu')
 t1=time.time()
 
 print(f"RL deconvolution using CPU took {t1-t0} s")
 
 print("GPU")
 t0 = time.time()
-res_GPU = rl.RLDeconvolve.doRLDeconvolutionFromNpArrays(data_convolved_noised_uint8, datapsf, niter=10, method='gpu')
+res_GPU = rl.RLDeconvolve.doRLDeconvolutionFromNpArrays(data_convolved_noised_uint8, datapsf, niter=niter, method='gpu')
 t1=time.time()
 print(f"RL deconvolution using GPU took {t1-t0} s")
 
@@ -107,13 +107,13 @@ print(f"RL deconvolution, niter = {niter}")
 print("CPU")
 
 t0 = time.time()
-res_CPU = rl.RLDeconvolve.doRLDeconvolutionFromNpArrays(data_convolved_noised_uint8, datapsf, niter=10, method='cpu')
+res_CPU = rl.RLDeconvolve.doRLDeconvolutionFromNpArrays(data_convolved_noised_uint8, datapsf, niter=niter, method='cpu')
 t1=time.time()
 
 print(f"RL deconvolution using CPU took {t1-t0} s")
 
 print("GPU")
 t0 = time.time()
-res_GPU = rl.RLDeconvolve.doRLDeconvolutionFromNpArrays(data_convolved_noised_uint8, datapsf, niter=10, method='gpu')
+res_GPU = rl.RLDeconvolve.doRLDeconvolutionFromNpArrays(data_convolved_noised_uint8, datapsf, niter=niter, method='gpu')
 t1=time.time()
 print(f"RL deconvolution using GPU took {t1-t0} s")
