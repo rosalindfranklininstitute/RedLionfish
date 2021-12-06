@@ -1,5 +1,5 @@
 @echo off
-REM Deply package to Pypi
+REM Deploy package to Pypi
 
 rem updates
 python -m pip install --upgrade setuptools wheel --user
