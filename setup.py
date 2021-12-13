@@ -1,14 +1,25 @@
+'''
+Copyright 2021 Rosalind Franklin Institute
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+'''
+
 print("Note this software can use GPU accelation using PyOpenCL and Reikna.")
 print("Please install these packages seperately.")
 print("The PyOpenCL package available through pip may not install correctly and/or provide access to GPU.")
 print("The best way to install PyOpenCL+Reikna in a python environment is by using anaconda/conda envirnonments.")
 print("See more information here: https://documen.tician.de/pyopencl/misc.html")
 print("If PyOpenCL+Reikna packages are not available, RedLionfish can still run but it will use CPU backend of scipy FFT routines, which can be slow.")
-
-'''
-Copyright (C) 2021 Rosalind Franklin Institute
-
-'''
 
 from setuptools import setup
 
