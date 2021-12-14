@@ -23,6 +23,13 @@ import RedLionfishDeconv.RLDeconv3DReiknaOCL as rlfocl
 import RedLionfishDeconv.helperfunctions
 rlfocl.printGPUInfo()
 
+testWithGPU = False
+if rlfocl.isReiknaAvailable:
+    testWithGPU = True
+    print("Reikna available. Will run GPU tests.")
+else:
+    print("Reikna not available. GPU deconvolution tests will be skipped.")
+    
 #Run a deconvolution
 
 #Create a small 2d array to do FFT
@@ -67,14 +74,17 @@ t1=time.time()
 
 print(f"RL deconvolution using CPU took {t1-t0} s")
 
-print("GPU")
-t0 = time.time()
-res_GPU = rl.RLDeconvolve.doRLDeconvolutionFromNpArrays(data_convolved_noised_uint8, datapsf, niter=niter, method='gpu')
-t1=time.time()
-print(f"RL deconvolution using GPU took {t1-t0} s")
+if testWithGPU:
+    print()
+    print("GPU")
+    t0 = time.time()
+    res_GPU = rl.RLDeconvolve.doRLDeconvolutionFromNpArrays(data_convolved_noised_uint8, datapsf, niter=niter, method='gpu')
+    t1=time.time()
+    print(f"RL deconvolution using GPU took {t1-t0} s")
+
+
 
 print()
-
 
 #With larger data
 
@@ -112,8 +122,10 @@ t1=time.time()
 
 print(f"RL deconvolution using CPU took {t1-t0} s")
 
-print("GPU")
-t0 = time.time()
-res_GPU = rl.RLDeconvolve.doRLDeconvolutionFromNpArrays(data_convolved_noised_uint8, datapsf, niter=niter, method='gpu')
-t1=time.time()
-print(f"RL deconvolution using GPU took {t1-t0} s")
+if testWithGPU:
+    print()
+    print("GPU")
+    t0 = time.time()
+    res_GPU = rl.RLDeconvolve.doRLDeconvolutionFromNpArrays(data_convolved_noised_uint8, datapsf, niter=niter, method='gpu')
+    t1=time.time()
+    print(f"RL deconvolution using GPU took {t1-t0} s")
