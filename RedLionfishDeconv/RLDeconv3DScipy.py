@@ -150,5 +150,5 @@ def doRLDeconvolution_DL2_4(data_np , psf_np ,*, niter=10, callbkTickFunc=None):
         if not callbkTickFunc is None:
             callbkTickFunc()
 
-    data_deconv_uint8 = convertToUint8AndFullRange(xn1)
-    return data_deconv_uint8
+    dataret = xn1
+    return dataret

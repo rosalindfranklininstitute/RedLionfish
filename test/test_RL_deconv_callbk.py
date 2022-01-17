@@ -2,9 +2,6 @@
 This example shows how to do RL deconvolution using either CPU or GPU,
 using callback functionality that gives an update of progress of calculation.
 '''
-#Testing in local computer using VScode, without having installed RedLionfish package
-#import sys
-#sys.path.append('..')
 
 #from RedLionfishDeconv import *
 import RedLionfishDeconv as rl
