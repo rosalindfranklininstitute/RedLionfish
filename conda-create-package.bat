@@ -13,6 +13,7 @@
 @REM limitations under the License.
 
 REM Script file to automatically run the conda building package
+REM Note: This will not upload or update the conda-forge package
 
 rmdir /s/q conda-built-packages
 mkdir conda-built-packages
