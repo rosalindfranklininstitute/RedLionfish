@@ -51,7 +51,7 @@ The Richardson-Lucy iterative algorithm for deconvolution is a way to move from 
 
 From Richardson article [REF], and renaming variables here, the one-dimensional form of the restorative iteration in its discrete form is:
 
-$$ EstimateImage_{n+1,i} = EstimateImage_{n,i} \times \sum_{i_0}{ PSF_{i,i_0} \frac{MeasuredImage_{i_0}}{\sum_{i_1}PSF_{i_1,i_0} \dot EstimateImage_{n,i_1}} }$$
+$$ EstimateImage_{n+1,i} = EstimateImage_{n,i} \times \sum_{i_0}{ PSF_{i,i_0} \frac{MeasuredImage_{i_0}}{\sum_{i_1}PSF_{i_1,i_0} \cdot EstimateImage_{n,i_1}} }$$
 
 with $n+1$ being the next iteration after $n$.
 
