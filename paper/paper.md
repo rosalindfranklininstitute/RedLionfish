@@ -62,7 +62,7 @@ This formula can be written as convolutions, but it is important to be careful w
 
 $$ EI_{n+1} = EI_{n} \times \left [ { FSP \ast \frac{MI}{PSF \ast EI_{n}} } \right ]$$
 
-with FSP being the *flipped* form of the PSF discrete data.
+with FSP being the *flipped* form of the PSF discrete data and $\ast$ representing the multidimensional convolution operation.
 This formula is also valid in higher dimensions, maintaining the convolution, PSF flipping and element-wise multiplication. We now focus our discussion here the three dimensional case and how to implement and optimize this calculation.
 
 We first note that each iteration involves the calculation of two convolutions, one multiplication and one division, with the convolution known of being the slowest.
