@@ -1,4 +1,4 @@
-name: Create Joss pdf preview test'
+name: Create Joss pdf preview test
 
 on:
   push:
