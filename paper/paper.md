@@ -105,3 +105,5 @@ The RedLionfish source code is wrtitten in python is available in github (https:
 
 # Acknowledgments
 All authors acknowledge funding from Wellcome Trust grants 220526/Z/20/Z and 212980/Z/18/Z.
+
+# References
