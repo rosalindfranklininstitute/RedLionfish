@@ -1,6 +1,7 @@
-on: [push]
-  branches:
-    - Joss-paper
+on:
+  push:
+    branches:
+      - Joss-paper
     
 jobs:
   paper:
