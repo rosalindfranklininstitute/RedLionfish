@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - Joss-paper
+      - 'Joss-paper'
     
 jobs:
   paper:
