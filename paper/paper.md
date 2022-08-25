@@ -65,13 +65,11 @@ $$ EI_{n+1} = EI_{n} \times \left [ { FSP \ast \frac{MI}{PSF \ast EI_{n}} } \rig
 with FSP being the *flipped* form of the PSF discrete data and $\ast$ representing the multidimensional convolution operation.
 This formula is also valid in higher dimensions, maintaining the convolution, PSF flipping and element-wise multiplication. We now focus our discussion here the three dimensional case and how to implement and optimize this calculation.
 
-We first note that each iteration involves the calculation of two convolutions, one multiplication and one division, with the convolution known of being the slowest.
-in the two-dimensional case, personal computers nowadays handle these calculations relatively fast, with images with size 1024x1024 taking less than a second per iteration, depending in the computer speed, however three-dimensional data can take significantly longer.
+RL-deconvolution is necessary integral part of the data analysis workflow, but can also quite time-consuming as resource hungry in particular when dealing with large data sets.
 Experimental three-dimensional data is becoming increasingly common
 in tomography and light-sheet microscopy being two notable examples.
-RL-deconvolution is necessary integral part of the data analysis workflow, but is also quite time-consuming as resource hungry.
-As such, fast and reliable RL-deconvolution processing can be very useful.
-The convolution calculation is commonly accelerated using the fast fourier transform (FFT). A single convolution calculation involves three FFT (two forward and one inverse) and a multiplication calculation. This is significantly faster than calculating the convolution by suing the sliding PSF method. Despite this algorithmic shortcut, a single iteration of a data volume with 1024x1024x64 pixels, and a PSF of about 64x64x64, running 10 iterations can take up to 10mins.
+As such, fast and reliable RL-deconvolution processing can be very useful in accelerating data processing.
+We first note that each iteration involves the calculation of two convolutions, one multiplication and one division. The convolution is known of being the slowest since each voxel in the original data is multiplied with each voxel in the PSF. The convolution calculation is commonly accelerated using the fast fourier transform (FFT). A single convolution calculation involves three FFT (two forward and one inverse) and a multiplication calculation. This is significantly faster than calculating the convolution by using the sliding PSF method. Despite this algorithmic shortcut, a single iteration of a data volume with 1024x1024x64 pixels, and a PSF of about 64x64x64, running 10 iterations can take up to 10mins.
 
 An additional problem is that the intermediate calculations such as the FFT and other mathematical operations require intermediate storage of the arrays in memory as floating point numbers. With restricted GPU or CPU memory this iterative calculation is likely to throw out-of-memory errors. Access to supercomputers may not be very the most convenient solution sought for a preprocessing filter.
 
