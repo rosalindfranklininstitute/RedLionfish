@@ -30,10 +30,11 @@ Experimental limitations in optics in many microscopy and astronomy instruments 
 detrimental effects in imaging of objects, which can be generally described mathematically
 as a convolution of the real object image with the point spread function that characterizes
 the system.
-The very popular Richardson-Lucy deconvolution algorithm is widely used for the inverse process,
-to restore the data without these optical effects.
-Here we present the RedLionfish python package that was written to make the deconvolution of
-volumetric (3D) data easier to use, very fast (by exploiting GPU computing capabilities)
+The very popular Richardson-Lucy (RL) deconvolution algorithm is widely used for the inverse process,
+to restore the data without these optical effects, and this is often an critical restoring step in
+data processing of experimental data.
+Here we present the versatile RedLionfish python package, that was written to make the RL deconvolution of
+volumetric (3D) data easier to run, very fast (by exploiting GPU computing capabilities)
 and automatic handling of hardware limitations for large datasets.
 It can also be used programmatically in Python/numpy using conda or PyPi package managers,
 and is also a simple napari plugin.
