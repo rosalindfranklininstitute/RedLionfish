@@ -9,8 +9,14 @@ authors:
   - name: Luís M. A. Perdigão
     orcid: 0000-0002-0534-1512
     affiliation: 1
+  - name: Casper Berger
+    orcid: 0000-0002-0705-3194
+    affiliation: 1
   - name: Neville B.-y. Yee
     orcid: 0000-0003-0349-3958
+    affiliation: 1
+  - name: Michele C. Darrow
+    orcid: 0000-0001-6259-1684
     affiliation: 1
   - name: Mark Basham
     orcid: 0000-0002-8438-1415
@@ -20,12 +26,14 @@ affiliations:
   - name: The Rosalind Franklin Institute
     index: 1
 
-date: 05 August 2020
+date: 25 August 2022
 bibliography: paper.bib
 
 ---
+<!-- This is a comment . If you want to comment this article try to look like me -->
 
 # Summary
+
 Experimental limitations in optics in many microscopy and astronomy instruments result in
 detrimental effects in imaging of objects, which can be generally described mathematically
 as a convolution of the real object image with the point spread function that characterizes
@@ -38,7 +46,6 @@ volumetric (3D) data easier to run, very fast (by exploiting GPU computing capab
 and automatic handling of hardware limitations for large datasets.
 It can also be used programmatically in Python/numpy using conda or PyPi package managers,
 and is also a simple napari plugin.
-
 
 # Statement of need
 
@@ -64,7 +71,6 @@ $$ EI_{n+1} = EI_{n} \times \left [ { FSP \ast \frac{MI}{PSF \ast EI_{n}} } \rig
 
 with FSP being the *flipped* form of the PSF discrete data and $\ast$ representing the multidimensional convolution operation.
 This formula is also valid in higher dimensions, maintaining the convolution, PSF flipping and element-wise multiplication. We now focus our discussion here the three dimensional case and how to implement and optimize this calculation.
-
 
 Experimental three-dimensional data is becoming increasingly common
 in tomography and light-sheet microscopy being two notable examples.
@@ -93,19 +99,22 @@ An additional functionality that is included is the ability to monitor calculati
 
 It is often desireable to filter large 3D datasets by means of RL-deconvolution, as quick as possible, such as while running an experiment to help locate precise 3D position of beads or cells in light microscopy data, which is required, before proceeding to the next experimental step. GPU can boost processing speeds but large datasets may pose a problem with limited GPU memory resources. Redlionfish, by default tries to use default GPU and without chunking data but if out-of-memory error occurs it will attempt to use block deconvolution, whereby the data is split into smaller volumes and the full RL-deconvolution is run independently, and later merged into a single volume [@lee_block-iterative_2015] (\autoref{fig:fig3}). Unfortunately the nature of the deconvolution algorithm requires significant amount data from neighbouring volumes which means that padding must be used and edge-effects from each block may affect the results. This is currently implemented in parameter `psfpaddingfract` (set to 1.2 as default) in function `block_RLDeconv3DReiknaOCL4()` in file `RLDeconv3DReiknaOCL.py`. This parameter sets how much of the relative size of the PSF data, each of the block edges will be cropped and merged to the final result data volume.
 
-![Simplified schematic of the block algorithm for Richardson-Lucy deconvolution. Data is split into extended blocks. Complete iterative calculation is performed for each block, then padding is cropped and merged to a single data volume.\label{fig:fig3}](Figure3.png)
+![Simplified schematic of the block algorithm for Richardson-Lucy deconvolution. Data is split into extended blocks. The complete iterative calculation is performed in each block. Then the result is cropped and merged to a single data volume.\label{fig:fig3}](Figure3.png)
 
 It is known in RL-deconvolution that edge errors propagate innwards. Considering the one-dimensional case, using finite width of data ($w_{data}$) and PSF ($w_{PSF}$), and remembering that there are two discrete convolutions in each iteration of the RL algorithm, the 'valid' region of the reduces by $2w_{PSF}-2$ per iteration. For example, imagine that we can split into blocks of data with width of 512 and our PSF is 32, then a typical 10 iterations would mean that the valid region is reduced to $512-10\times 2(2\times 32 -2) = -108$, meaning that the whole result would be invalid. The 'ideal' solution to get the highest precision in the RL-deconvolution is to run with very low number of iterations, often insuficient to restore data to an acceptable level. In fact, in most cases where RL-deconvolution is used, users do apply several iterations, well beyond the limit established for getting positive size valid regions, and sometimes also using large size PSF's, only to collect the result without bothering to crop the 'valid'-only region. Theoretically the whole result is invalid but despite the reduced precision of using this method, the results obtained are often accepted and used for further analysis. There are ways that the loss of quality can be mitigated, such as using edge normalisation and block-interlacing methods [@lee_block-iterative_2015], that work well in many cases such as with gaussian PSFs and with camera photos, however these are not mathematically correct. The reader is advised to check the repository notebooks examples that conduct deeper analysis of the number of iterations and psf size in reducing the valid region based in a precision criteria. In the blocked processing algorithm, however each block will innevitably experience these edge effects, which may or may not be visible.
 
 Several solutions to mitigate these rapid reduction of the valid region were carefully considered but none of them was considered feasible as it would require significantly higher computer processing and memory consumption. This precision issue will be addressed in future versions at expense of speed in case user requires.
 
 # Social acceptance
+
 This package became instantly popular from the first day it was published as a napari plugin in PyPI, as shared by other scientists on Twitter and discussed in image.sc forum. There are other free software RL-deconvolution solutions available and users are encouraged to try and compare [@sage_deconvolutionlab2_2017; @lambert_pycudadecon_2022; @noauthor_maweigertgputools_nodate; @haase_clij_2020]. RedLionfish combines many good aspects by being user-friendly through napari, it is reasonably fast, it is free and easily available, and it simply completes the job regardless of your PC.
 
 # Availability
+
 The RedLionfish source code is wrtitten in python is available in github (https://github.com/rosalindfranklininstitute/RedLionfish). It is easily installable in anaconda python environments from conda-forge channel or using pip (PyPI) with the package name being `redlionfish`.
 
 # Acknowledgments
+
 All authors acknowledge funding from Wellcome Trust grants 220526/Z/20/Z and 212980/Z/18/Z.
 
 # References
