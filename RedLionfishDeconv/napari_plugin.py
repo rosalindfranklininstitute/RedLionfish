@@ -31,6 +31,7 @@ from napari_plugin_engine import napari_hook_implementation
 
 #As suggested by DragaDoncila
 # https://github.com/rosalindfranklininstitute/RedLionfish/pull/5#issuecomment-1239989472
+# If napari is not installed
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from napari.types import LabelsData, ImageData, LayerDataTuple
