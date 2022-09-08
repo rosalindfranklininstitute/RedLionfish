@@ -29,8 +29,12 @@ This decorator is poorly documented. I don't know how to use it.
 from magicgui import magic_factory
 from napari_plugin_engine import napari_hook_implementation
 
-from napari.types import LabelsData, ImageData, LayerDataTuple
-from napari.layers import Image
+#As suggested by DragaDoncila
+# https://github.com/rosalindfranklininstitute/RedLionfish/pull/5#issuecomment-1239989472
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from napari.types import LabelsData, ImageData, LayerDataTuple
+    from napari.layers import Image
 
 import RedLionfishDeconv as rl
 
