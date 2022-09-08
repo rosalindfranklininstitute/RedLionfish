@@ -26,16 +26,21 @@ This decorator is poorly documented. I don't know how to use it.
 
 
 '''
+
 from magicgui import magic_factory
 from napari_plugin_engine import napari_hook_implementation
 
 #As suggested by DragaDoncila
 # https://github.com/rosalindfranklininstitute/RedLionfish/pull/5#issuecomment-1239989472
 # If napari is not installed
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from napari.types import LabelsData, ImageData, LayerDataTuple
-    from napari.layers import Image
+# from typing import TYPE_CHECKING
+# print(f"TYPE_CHECKING: {TYPE_CHECKING}")
+# if TYPE_CHECKING:
+#     from napari.types import LabelsData, ImageData, LayerDataTuple
+#     from napari.layers import Image
+
+from napari.types import LabelsData, ImageData, LayerDataTuple
+from napari.layers import Image
 
 import RedLionfishDeconv as rl
 
