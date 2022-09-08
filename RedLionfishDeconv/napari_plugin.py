@@ -48,51 +48,6 @@ https://napari.org/guides/stable/magicgui.html
 Note that the @magic_factory and @magicgui behave in similar way.
 '''
 
-
-# @magic_factory (
-#     call_button="Test button0" #,
-#     #iterations={'max':100}
-#     )
-# def test_widget0(
-#     data: "ImageData", #Input is data that can be selected
-#     psfdata:"ImageData",
-#     iterations=10 #User chooses number of RL iterations
-#     #useGPU = True #
-#     ) -> LabelsData: #Result is data
-    
-#     print(f"you have selected {data}")
-
-
-# @magic_factory (
-#     call_button="Test button1" ,
-#     iterations={'max':100}
-#     )
-# def test_widget1(
-#     data: ImageData, #Input is data that can be selected
-#     psfdata:ImageData,
-#     iterations=10, #User chooses number of RL iterations
-#     useGPU = True 
-#     ) -> LabelsData: #Result is data
-
-#     print("You clicked the button.")
-#     print(f"iterations = {iterations}")
-#     if not data is None:
-#         print(f"data shape = {data.shape}")
-#         print(f"type(data) = {type(data)}")
-#         print(f"data.dtype = {data.dtype}")
-
-#     if not psfdata is None:
-#         print(f"psfdata shape = {psfdata.shape}")
-#         print(f"type(psfdata) = {type(psfdata)}")
-#         print(f"psfdata.dtype = {psfdata.dtype}")
-
-
-# #Really basic
-# @magic_factory (call_button="Test button2")
-# def test_widget2(img_layer: Image):
-#     print(f"you have selected {img_layer}")
-
-
 #The widget
 @magic_factory (
     call_button="Go" ,
