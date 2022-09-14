@@ -58,19 +58,31 @@ class RLDeconv3DReiknaOCL:
     If this is a problem, you should use the block convolution algorithms below.
     '''
     def __init__(self, shape):
+        '''
+        Parameter
+            shape: shape of the data that will be used for the deconvolution algorithm.
+            It is important to do it here so that class can do some preparatory steps before running
+            the iterative calculation
+
+        '''
+
         self.shape = shape
 
         self.api = cluda.ocl_api()
         self.thr = self.api.Thread.create()
 
         ocldevice = self.api.get_platforms()[0].get_devices()[0] #Get first device available
+        logging.info(f"OCL device selected : {ocldevice}")
+
         devparam = self.api.DeviceParameters(ocldevice)
         self.maxsize = devparam.max_work_item_sizes
+        logging.info(f"Device params max_work_item_sizes: {self.maxsize}")
 
         #check shape is not too large
         if np.product(np.array(shape)) > np.product(np.array(self.maxsize)):
-            logging.error(f"Shape {shape} is too large for OpenCL device shape limits {self.maxsize}")
-            raise ValueError("Shape is too large.")
+            #logging.error(f"Shape {shape} is too large for OpenCL device shape limits {self.maxsize}")
+            # raise ValueError("Shape is too large.")
+            logging.info(f"Shape {shape} is too large for OpenCL device shape limits {self.maxsize}. But will try regardless.")
 
         dtype=np.complex64 #Reikna fft only works with complex types
         #Multiply kernel

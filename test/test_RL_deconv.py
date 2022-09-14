@@ -1,6 +1,3 @@
-#Testing in local computer using VScode, without having installed RedLionfish package
-#import sys
-#sys.path.append('..')
 
 #from RedLionfishDeconv import *
 import RedLionfishDeconv as rl
@@ -35,7 +32,9 @@ print(f"res_sk.shape: {res_skimage.shape}")
 res_skimage_uint8 = rl.helperfunctions.convertToUint8AndFullRange(res_skimage)
 
 import napari
-nv = napari.view_image(res_gpu_uint8, ndisplay=3)
-nv.add_image(res_cpu_uint8)
+nv = napari.view_image(data, ndisplay=3)
 nv.add_image(res_skimage_uint8)
+nv.add_image(res_gpu_uint8)
+nv.add_image(res_cpu_uint8)
+
 napari.run()
