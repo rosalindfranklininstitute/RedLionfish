@@ -313,6 +313,12 @@ def block_RLDeconv3DReiknaOCL4(data, psfdata, *, niter=10, max_dim_size=256, psf
     '''
     In this version, blockstep is reduced, effectively setting the valid area to a smaller part of the block calculation.
     New parameter psfpaddingfract to set how how much padding relative to psfsize to use
+
+    Parameters
+        data: numpy 3D array with the data to deconvolve
+        psfdata: numpy 3D array with the PSF to use for the deconvolution
+        niter: number of Richardson-Lucy algorithm iterations
+        paddingfract: padding to use when merging data as a relative fraction on psf size
     '''
     logging.info("block_RLDeconv3DReiknaOCL4()")
 
@@ -322,46 +328,58 @@ def block_RLDeconv3DReiknaOCL4(data, psfdata, *, niter=10, max_dim_size=256, psf
     
     #Check psf size is not too large for the GPU calculation
     if _isShapeTooBigForDevice(psfdata.shape):
-        logging.error("PSF data shape is too large. Exiting.")
-        raise ValueError("Psf data shape is too large")
+        logging.WARNING("PSF data shape is larger than GPU data size limits. Error may occur")
+        #raise ValueError("Psf data shape is too large")
 
-    data = convertToFloat32AndNormalise(data)
+    data = convertToFloat32AndNormalise(data,bResetZero=False)
 
     shapedata = data.shape
     shapepsf = psfdata.shape
 
-    #print(f"data shape: {shapedata} , psf shape: {shapepsf}")
+    logging.info(f"data shape: {shapedata} , psf shape: {shapepsf}")
 
     #For each of the dimensions.
     #check size is larger than max_dim_size. If it is then limit block calculation using max_dim_size
     blockshape=[0,0,0]
-    for a in range(3):
+    for axis in range(3):
         blockshape0 = max_dim_size #default
-        if shapedata[a]<max_dim_size :
-            blockshape0 = shapedata[a]
-        blockshape[a] = blockshape0
+        if shapedata[axis]<max_dim_size :
+            blockshape0 = shapedata[axis]
+        blockshape[axis] = blockshape0
     
     logging.info(f"blockshape: {blockshape}")
 
+    # Check for each axis whether PSF is larger and if blocking will be done along that axis
+    # If yes, then don't use this algorithm as it will give bad results
+    for axis in range(3):
+        if shapedata[axis] > blockshape[axis] and shapepsf[axis]> blockshape[axis]:
+            raise ValueError("PSF and data does not allow efficient calculation using this blocking algorithm. Exiting.")
+
     #check if shape is too large
     if _isShapeTooBigForDevice(blockshape):
-        logging.error("blockshape is too large. Exiting.")
-        raise ValueError("blockshape is too large")
+        #logging.error("blockshape is too large. Exiting.")
+        logging.WARNING("Adjusted blockshape is larger than GPU data size limits. Error may occur")
+        #raise ValueError("blockshape is too large")
 
     #Set step (and padding) from the blockshape and padding being psf size *1.5
-    #Valid area being the block size minus the psf size *1.5
-    blockstep = list(shapedata) #default, makes a copy
-    validshape = list(shapedata)
+    #Valid area being the block size minus the psf size * psfpaddingfract
+
+    #blockstep = list(shapedata) #default, makes a copy
+    #validshape = list(shapedata)
+
+    blockstep = list(blockshape) #default, makes a copy
+    #validshape = list(blockshape)
     for a in range(3):
         v0 = int(blockshape[a] - psfpaddingfract*shapepsf[a])
         if blockshape[a]< shapedata[a] and v0>0:
-            validshape[a] = v0
-            blockstep[a] =  validshape[a]
+            #validshape[a] = v0
+            #blockstep[a] =  validshape[a]
+            blockstep[a]=v0
 
+    validshape = blockstep
     logging.info(f"blockstep: {blockstep}")
 
     datares = np.zeros(data.shape) #To collect results
-
 
     #Setup Reikna RL Deconv Class to use this shape
     my_rldeconv = RLDeconv3DReiknaOCL(blockshape)

@@ -76,28 +76,23 @@ def doRLDeconvolutionFromNpArrays(data_np , psf_np ,*, niter=10, method='gpu', u
                 bKeepTrying=True
                 blocksize=512
 
-                #Check psf size is not too large
-                if np.max(np.array(psf_np.shape))< int(blocksize/2):
-                    while bKeepTrying:
-                        try:
-                            resRL = rlreikna.block_RLDeconv3DReiknaOCL4(data_np , psf_np,niter=niter,max_dim_size=blocksize, callbkTickFunc=callbkTickFunc)
+                while bKeepTrying:
+                    try:
+                        resRL = rlreikna.block_RLDeconv3DReiknaOCL4(data_np , psf_np,niter=niter,max_dim_size=blocksize, callbkTickFunc=callbkTickFunc)
+                        bKeepTrying=False
+                    except Exception as e:
+                        #Error doing previous calculation, reduce block size
+                        logging.info(f"Error: block_RLDeconv3DReiknaOCL4 with blocksize={blocksize} failed (GPU). Will try to halve blocksize.")
+                        logging.info(e)
+                        if blocksize>=128 :
+                            blocksize = blocksize//2
+                            bKeepTrying=True
+                        else:
+                            #No point reducing the block size to smaller, fall back to CPU
                             bKeepTrying=False
-                        except Exception as e:
-                            #Error doing previous calculation, reduce block size
-                            logging.info(f"Error: block_RLDeconv3DReiknaOCL4 with blocksize={blocksize} failed (GPU). Will try to halve blocksize.")
-                            logging.info(e)
-                            if blocksize>=128 :
-                                blocksize = blocksize//2
-                                bKeepTrying=True
-                            else:
-                                #No point reducing the block size to smaller, fall back to CPU
-                                bKeepTrying=False
-                                method = 'cpu'
-                                logging.info('GPU calculation failed, falling back to CPU.')
-                else:
-                    logging.info('PSF shape is too large for doing block iteration. Falling to CPU.')
-                    method = 'cpu'
-                    
+                            method = 'cpu'
+                            logging.info('GPU calculation failed, falling back to CPU.')
+
 
         else:
             logging.info("Reikna is not available, falling back to CPU scipy calculation")

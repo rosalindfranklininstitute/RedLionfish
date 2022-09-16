@@ -82,7 +82,7 @@ def main():
         outpath = pathname + "_it" + str(iterations) + ".tiff"
 
     import RedLionfishDeconv as rl
-    rl.doRLDeconvolutionFromFiles(data3Dpath, psf3Dpath, iterations, savepath=outpath)
+    _ = rl.doRLDeconvolutionFromFiles(data3Dpath, psf3Dpath, iterations, savepath=outpath)
 
 if __name__ == "__main__":
     # Run if called from the command line

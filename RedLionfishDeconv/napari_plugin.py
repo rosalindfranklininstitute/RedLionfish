@@ -39,13 +39,21 @@ from napari_plugin_engine import napari_hook_implementation
 #     from napari.types import LabelsData, ImageData, LayerDataTuple
 #     from napari.layers import Image
 
-from napari.types import LabelsData, ImageData, LayerDataTuple
-from napari.layers import Image
+from napari.types import ImageData, LayerDataTuple
+from napari.utils import progress
 
 import RedLionfishDeconv as rl
 
-import logging
-logging.basicConfig(level=logging.INFO)
+# import logging
+# logging.basicConfig(level=logging.INFO)
+
+#Logging in napari is not working not sure why.
+# Maybe napari alos uses logging and outputs to different location
+
+# To output to console use print or loguru instead.
+
+import time
+
 
 ''' The parameters after the decorator setup the title and other properties of the widget window.
 
@@ -61,13 +69,14 @@ Note that the @magic_factory and @magicgui behave in similar way.
 #The widget
 @magic_factory (
     call_button="Go" ,
-    iterations={'max':100} 
+    iterations={'max':16384} 
     )
 def RedLionfish_widget(
     data: ImageData, #Input is data that can be selected
     psfdata:ImageData,
     iterations=10, #User chooses number of RL iterations
-    useGPU = True 
+    useGPU = True,
+    resAsUInt8=True
     ) -> LayerDataTuple: #Result is a LayerDataTuple, like (data, {dict_properties})
 
     print(f"iterations = {iterations}")
@@ -79,18 +88,35 @@ def RedLionfish_widget(
         #Print information before calculation
         print(f"data.shape = {data.shape} , type(data) = {type(data)} , data.dtype = {data.dtype}")
         print(f"psfdata.shape = {psfdata.shape} , type(psfdata) = {type(psfdata)} , psfdata.dtype = {psfdata.dtype}")
-        
+
+        pbr=progress(total=iterations)
+        #pbr=progress()
+        pbr.set_description(f"Calculation progress")
+
+        def callback():
+            # niter+=1
+            # pbr_val= niter % iterations
+            # pbr.n=pbr_val
+            # pbr.last_print_n = pbr_val
+            #print("iteration tick")
+            pbr.update(1)
+            pbr.refresh()
+            #time.sleep(0.1)
+
         if data.ndim==3 and psfdata.ndim==3: #For now, only 3D is supported
+            #logging.basicConfig(level=logging.INFO) #not working
+
             method = 'cpu' #Default
             if useGPU:
                 method='gpu'
             #Run the deconvolution
-            datares_uint8 = rl.doRLDeconvolutionFromNpArrays(data, psfdata, niter= iterations, method = method ,resAsUint8=True )
+            datares = rl.doRLDeconvolutionFromNpArrays(data, psfdata, niter= iterations, method = method ,resAsUint8=resAsUInt8 , callbkTickFunc=callback)
 
-            ret = ( datares_uint8 , { 'name':'RL-deconvolution'})
+            ret = ( datares , { 'name':'RL-deconvolution'})
         else:
             print("Data or PSF is not 3-dimensional.")
 
+        pbr.close()
     return ret
 
 

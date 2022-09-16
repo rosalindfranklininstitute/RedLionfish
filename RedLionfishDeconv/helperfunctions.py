@@ -83,7 +83,7 @@ def circulify3D(data3D):
     
     return data0
 
-def convertToFloat32AndNormalise(data, normaliseType=None, bResetZero=True):
+def convertToFloat32AndNormalise(data, normaliseType=None, bResetZero=False):
     '''
     Converts data to float32 format and optionally resets zero and normalises
     Parameters:

@@ -33,7 +33,7 @@ def doRLDeconvolution12(data_np , psf_np , *, niter=10, callbkTickFunc=None):
     #Only at the end of the calculation it gets the shape needed
 
     #Convert and normalise
-    data_np_norm = convertToFloat32AndNormalise(data_np)
+    data_np_norm = convertToFloat32AndNormalise(data_np, bResetZero=False)
     psf_np_norm = convertToFloat32AndNormalise(psf_np , normaliseType='sum', bResetZero=False) #Normalise to sum
 
     s1 = data_np_norm.shape
@@ -104,7 +104,7 @@ def doRLDeconvolution_DL2_4(data_np , psf_np ,*, niter=10, callbkTickFunc=None):
     
     logging.info("doRLDeconvolution_DL2_4() (CPU)")
     #Convert and normalise
-    data_np_norm =convertToFloat32AndNormalise(data_np) #don't normalise
+    data_np_norm =convertToFloat32AndNormalise(data_np, bResetZero=False) #don't normalise
 
     #Check last axis is even size, otherwise it will give error
     if data_np_norm.shape[-1] %2 != 0: #odd number
