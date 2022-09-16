@@ -48,7 +48,7 @@ import RedLionfishDeconv as rl
 # logging.basicConfig(level=logging.INFO)
 
 #Logging in napari is not working not sure why.
-# Maybe napari alos uses logging and outputs to different location
+# Maybe napari also uses logging and outputs to different location
 
 # To output to console use print or loguru instead.
 
@@ -69,7 +69,9 @@ Note that the @magic_factory and @magicgui behave in similar way.
 #The widget
 @magic_factory (
     call_button="Go" ,
-    iterations={'max':16384} 
+    iterations={'max':16384},
+    useGPU={"label": "Use GPU if possible"}, # https://github.com/napari/magicgui/blob/main/examples/change_label.py
+    resAsUInt8={"label": "Result as clip-norm integer (uint8)"}
     )
 def RedLionfish_widget(
     data: ImageData, #Input is data that can be selected
@@ -83,7 +85,7 @@ def RedLionfish_widget(
 
     ret = None
 
-    datares_uint8=None
+    datares=None
     if not data is None and not psfdata is None:
         #Print information before calculation
         print(f"data.shape = {data.shape} , type(data) = {type(data)} , data.dtype = {data.dtype}")
@@ -94,10 +96,6 @@ def RedLionfish_widget(
         pbr.set_description(f"Calculation progress")
 
         def callback():
-            # niter+=1
-            # pbr_val= niter % iterations
-            # pbr.n=pbr_val
-            # pbr.last_print_n = pbr_val
             #print("iteration tick")
             pbr.update(1)
             pbr.refresh()
