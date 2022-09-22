@@ -24,6 +24,16 @@ To make RedLionfish easily accessible, it is available through PyPi and anaconda
 
 Please note that this software only works with 3D data. For 2D data there are many alternatives such as the DeconvolutionLab2 in Fiji (ImageJ) and sckikit-image.
 
+## Napari plugin
+
+You can now use the Napari's plugin installation in *Menu -> Plugins -> Install/Uninstall Plugins...*.
+However, if you chose to use this method, GPU acceleration may not be available and it will use the CPU backend. Better check.
+
+![](resources\imag1.jpg)
+
+Alternatively, if you follow the installation instructions below, and install the napari in the same python environment
+then the plugin should be immediately available in the *Menu -> Plugins -> RedLionfish*.
+
 
 ## Installation
 
@@ -61,20 +71,9 @@ conda update --all -c conda-forge
 The second line is needed because you are installing from a local file, conda installer will not install dependencies. Right after this you should run the update command given.
 
 
-## Napari plugin
-
-If you follow the installation instructions above, and install the napari in the same conda environment
-then the plugin should be immediately available in the *Menu -> Plugins -> RedLionfish*.
-
-![](resources\imag1.jpg)
-
-Alternatively, you can use the Napari's plugin installation in *Menu -> Plugins -> Install/Uninstall Plugins...*.
-However, if you chose to use this method, GPU acceleration may not be available and it will use the CPU backend.
-
-
 ### Manual installation (advanced and for developers)
 
-Please note that in order to use OpenCL GPU accelerations, PyopenCL must be installed.
+Please note that in order to use OpenCL GPU accelerations, PyOpenCL must be installed.
 The best way to get it working is to install it under a conda environment.
 
 The installation is similar to the previously described for PyPi.
@@ -92,9 +91,13 @@ and run
 
 
 ### Debug installation
-If you want to test and modify the code then you should probably install instead using:
+If you want to test and modify the code then you should probably install in debug mode using:
 
 `python setup.py develop`
+
+or
+
+`pip install -e .`
 
 
 ## More information
@@ -105,7 +108,7 @@ The CPU version is very similar to the [skimage.restoration.richardson_lucy](htt
 major differences are:
 
 - the convolution steps use FFT only.
-- PSF and PSF-flipped FFTs are precalcated before starting iterations.
+- PSF and PSF-flipped FFTs are precalculated before starting iterations.
 
 The GPU version, was written in to use Reikna package, which does FFT using OpenCL, via PyOpenCL.
 
@@ -123,24 +126,33 @@ If you are using the RedLionfish in your code, note that, by default, `def doRLD
 
 Many examples can be found in `/test' folder.
 
-Computer generated data and an experimental PSF can be found in `test\testdata`
+A quick and benchmarking installation can be run from the proect root using the command:
 
-Here is an example using the Redlionfish plugin in napari:
+'python test\test_and_benchm.py'
 
-1. load data `test\testdata\gendata_psfconv_poiss_large.tif`
-2. load psf data `test\testdata\PSF_RFI_8bit.tif`
-3. In the RedLionfish side window ensure that 'gendata_psfconv_poiss_large' is selected in data dropdown widget, and `PSF_RFI_8bit` is selected in psfdata widget.
-4. Choose number of iterations (default=10)
-5. Click 'Go' button and wait until result shows as a new data layer.
-6. Use controls of the left panel to compare before and after RL deconvolution: select 'RL-deconvolution' layer and set colormap to red. Hide PSF_RFI_8bit. Make sure that both 'RL-deconvolution' and 'gendata-psfconv' are visible. Now, hide/unhide RL-deconvolution layer to see before and after deconvolution. Adjust contrast limits of each layer as desired.
+or (*nix)
 
+'python test/test_and_benchm.py'
 
-For benchmarking, it is recommended to run `test_and_benchm.py` from the command line.
 This will print out information about your GPU device (if available) and run some deconvolutions.
 It initially creates some data programatically, convolutes with a gaussian PSF, and add Poisson noise.
 Then it executes executes the
 Richardson-Lucy deconvolution calculation using CPU and GPU methods, for 10 iterations.
 During the calculation it will print some information to the console/terminal, including the time it takes to run the calculation.
+
+
+Computer generated data and an experimental PSF can be found in `test\testdata`
+
+### Testing Redlionfish in napari
+
+Here is an example testing the Redlionfish plugin in napari:
+
+1. load data `test\testdata\gendata_psfconv_poiss_large.tif` (can use draga and drop)
+2. load psf data `test\testdata\PSF_RFI_8bit.tif`
+3. In the RedLionfish side window ensure that 'gendata_psfconv_poiss_large' is selected in data dropdown widget, and `PSF_RFI_8bit` is selected in psfdata widget.
+4. Choose number of iterations (default=10)
+5. Click 'Go' button and wait until result shows as a new data layer.
+6. Use controls of the left panel to compare before and after RL deconvolution: select 'RL-deconvolution' layer and set colormap to red. Hide PSF_RFI_8bit. Make sure that both 'RL-deconvolution' and 'gendata-psfconv' are visible. Now, hide/unhide RL-deconvolution layer to see before and after deconvolution. Adjust contrast limits of each layer as desired.
 
 
 ## GPU vs CPU

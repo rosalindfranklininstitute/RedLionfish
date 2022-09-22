@@ -55,6 +55,7 @@ setup(
     install_requires=[
         'numpy',
         'scipy',
+        'pyopencl',
         'reikna'
     ],
 
