@@ -27,11 +27,9 @@ Please note that this software only works with 3D data. For 2D data there are ma
 
 ## Installation
 
-It is strongly recommended to install this package under a python anaconda or miniconda environment.
-This is because some calculations use PyOpenCL, and this is best installed in a conda environment.
+Previously there was a problem in installing using `pip`, because no PyOpenCL wheels for windows were avaiable. It is now avaialble. This package can be installed using pip or conda.
 
-
-### Conda install (recommended)
+### Conda install
 
 This package is available in conda-forge channel.
 It contains the precompiled libraries and it will install all the requirments for GPU-accelerated RL calculations.
@@ -40,20 +38,14 @@ It contains the precompiled libraries and it will install all the requirments fo
 
 ### Install from PyPi
 
-A major problem in installing using `pip` is that the installation of the optional package PyOpenCL needs to perform a build step.
-
-If you want to make the GPU acceleration accessible you can pre-install Reikna and PyOpenCL using conda.
-
 ```
-conda install reikna pyopencl -c conda-forge
 pip install redlionfish
 ```
 
-In Linux , the package `ocl-icd-system` is also useful.
+In Linux , the package `ocl-icd-system` may also be useful.
 
 ```
 conda install reikna pyopencl ocl-icd-system -c conda-forge
-pip install redlionfish
 ```
 
 

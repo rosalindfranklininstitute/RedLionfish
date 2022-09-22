@@ -30,7 +30,7 @@ this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
 
 setup(
-    version = '0.6',
+    version = '0.7',
     name = 'RedLionfish',
     description = 'Fast Richardson-Lucy deconvolution of 3D volume data using GPU or CPU with napari plugin.',
     long_description=long_description,
@@ -54,7 +54,8 @@ setup(
     zip_safe=False,
     install_requires=[
         'numpy',
-        'scipy'
+        'scipy',
+        'reikna'
     ],
 
     #for the napari plugin
