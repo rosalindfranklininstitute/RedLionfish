@@ -159,7 +159,9 @@ class RLDeconv3DReiknaOCL:
         psf_norm = convertToFloat32AndNormalise(psfdata , normaliseType='sum', bResetZero=False) #Normalise to sum
         psf0 = change3DSizeTo(psf_norm, self.shape) #Adjust size
         psf1 = circulify3D(psf0) #circulify psf
-        psf_cplx = psf1.astype(np.complex64)
+        
+        del(psf_norm)
+        psf_cplx = psf1.astype(np.complex64) # Can raise MEM_OBJECT_ALLOCATION_FAILURE
 
         #precalculate psf ffts
         psf_dev = self.thr.to_device(psf_cplx)
@@ -171,9 +173,9 @@ class RLDeconv3DReiknaOCL:
 
         psf_cplx_flip = np.array(np.flip(psf_cplx))
         psf_flip_dev = self.thr.to_device(psf_cplx_flip)
+        del(psf_cplx_flip)
         #psf_flip_fft_dev = thr.array(shape, np.complex64)
         self.cfft_gpu(self.psf_flip_fft_dev , psf_flip_dev) #fft calculation, stores in self.psf_flip_fft_dev
-        del(psf_cplx_flip)
         del(psf_flip_dev)
 
         self.is_psf_set = True
@@ -286,7 +288,7 @@ def nonBlock_RLDeconvolutionReiknaOCL( data_np, psf_np, *, niter = 10, callbkTic
         logging.error ("Data and psf data must be 3 dimensional. Exiting.")
         return None
     
-    data = convertToFloat32AndNormalise(data_np,None,bResetZero=False)
+    data = convertToFloat32AndNormalise(data_np,None,bResetZero=False) #Just convert to np.float32
     
     shape = data_np.shape
     myRL_Reikna =  RLDeconv3DReiknaOCL(shape) #Set up calculation by instantiating the class RLDeconv3DReiknaOCL
@@ -320,7 +322,7 @@ def block_RLDeconv3DReiknaOCL4(data, psfdata, *, niter=10, max_dim_size=256, psf
         niter: number of Richardson-Lucy algorithm iterations
         paddingfract: padding to use when merging data as a relative fraction on psf size
     '''
-    logging.info("block_RLDeconv3DReiknaOCL4()")
+    logging.info(f"block_RLDeconv3DReiknaOCL4() , data.shape:{data.shape}, psfdata.shape:{psfdata.shape}, max_dim_size:{max_dim_size}, psfpaddingfract:{psfpaddingfract}")
 
     if data.ndim !=3 or psfdata.ndim!=3:
         logging.error("Data and psf data must be 3 dimensional. Exiting.")
@@ -349,16 +351,18 @@ def block_RLDeconv3DReiknaOCL4(data, psfdata, *, niter=10, max_dim_size=256, psf
     
     logging.info(f"blockshape: {blockshape}")
 
-    # Check for each axis whether PSF is larger and if blocking will be done along that axis
+    # Check for each axis whether PSF is larger than 2*blocksize and if blocking will be done along that axis
     # If yes, then don't use this algorithm as it will give bad results
+
     for axis in range(3):
-        if shapedata[axis] > blockshape[axis] and shapepsf[axis]> blockshape[axis]:
-            raise ValueError("PSF and data does not allow efficient calculation using this blocking algorithm. Exiting.")
+        if (shapedata[axis] > blockshape[axis]): #Will do blocking along this axis
+            if 2*shapepsf[axis]>blockshape[axis]:
+                raise ValueError("PSF and data does not allow efficient calculation using this block algorithm. Exiting.")
 
     #check if shape is too large
     if _isShapeTooBigForDevice(blockshape):
         #logging.error("blockshape is too large. Exiting.")
-        logging.WARNING("Adjusted blockshape is larger than GPU data size limits. Error may occur")
+        logging.warning("Adjusted blockshape is larger than GPU data size limits. Error may occur")
         #raise ValueError("blockshape is too large")
 
     #Set step (and padding) from the blockshape and padding being psf size *1.5
@@ -379,12 +383,13 @@ def block_RLDeconv3DReiknaOCL4(data, psfdata, *, niter=10, max_dim_size=256, psf
     validshape = blockstep
     logging.info(f"blockstep: {blockstep}")
 
-    datares = np.zeros(data.shape) #To collect results
+    datares = np.zeros(data.shape, dtype=np.float32) #To collect results
 
     #Setup Reikna RL Deconv Class to use this shape
     my_rldeconv = RLDeconv3DReiknaOCL(blockshape)
     my_rldeconv.setPSF(psfdata)
 
+    logging.info(f"Beggining block-by-block iterations.")
     #do the block iteration, for loops for each dimension
     # the values with zero of the loop are for the left corner
     #The indexes i are for original data

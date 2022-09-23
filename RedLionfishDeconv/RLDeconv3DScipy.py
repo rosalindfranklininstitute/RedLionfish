@@ -120,10 +120,11 @@ def doRLDeconvolution_DL2_4(data_np , psf_np ,*, niter=10, callbkTickFunc=None):
     psf_norm = convertToFloat32AndNormalise(psf_np, normaliseType='sum',bResetZero=False)
 
     psf0 = change3DSizeTo(psf_norm, data_np_norm.shape)
-    #psf1 should have the same dimensions as data to successfully multiply and divide ffts
+    # #psf1 should have the same dimensions as data to successfully multiply and divide ffts
 
-    #Do circularisation of psf data before starting the RL algorithm
+    # #Do circularisation of psf data before starting the RL algorithm
     psf1 = circulify3D(psf0)
+
 
     #Precalculated psf_fft
     psf_fft= scipy.fft.rfftn(psf1)

@@ -28,6 +28,8 @@ def change3DSizeTo(data, shape):
     #based in size() code found in
     #https://github.com/Biomedical-Imaging-Group/DeconvolutionLab2/blob/e9af0aba493ba137d70877154648e5583e376a81/src/main/java/signal/RealSignal.java#L531
 
+    logging.info(f"change3DSizeTo() , shape:{shape}")
+    
     mz,my, mx = shape
     nz,ny,nx = data.shape
 
@@ -48,6 +50,27 @@ def change3DSizeTo(data, shape):
 
     return psf1
 
+def change3DSizeTo_KeepOrigin(data, shape):
+    '''
+    Resizes data to the new shape keeping data near origin.
+    If data size is smaller, then egdes are cropped.
+    If data is larger, data will be padded with zeros.
+    '''
+
+    logging.info(f"change3DSizeKeepOriginTo() , shape:{shape}")
+    
+    mz,my, mx = shape
+    nz,ny,nx = data.shape
+
+    psf1 = np.zeros( shape , dtype=data.dtype)
+    
+    vx = min(nx,mx)
+    vy = min(ny,my)
+    vz = min(nz, mz)
+
+    psf1[0:vz , 0:vy ,  0:vx] = data[ 0:vz , 0:vy ,  0:vx]
+
+    return psf1
 
 #An implementation of the circular() routine from DeconvolutionLab2 that shifts the data centre of the psf
 #to the corners of the volume.
@@ -120,8 +143,8 @@ def convertToUint8AndFullRange(data):
     if data is None:
         return None
         
-    res_256 = convertToFloat32AndNormalise(data, normaliseType='max', bResetZero=True)*256
-    res_uint8 = res_256.astype('uint8')
+    res_256 = convertToFloat32AndNormalise(data, normaliseType='max', bResetZero=True)*255
+    res_uint8 = res_256.astype(np.uint8)
     return res_uint8
 
 def generateGaussPSF(shape):
@@ -137,3 +160,5 @@ def generateGaussPSF(shape):
     data = 1/sigma/math.sqrt(2*math.pi) * np.exp( -0.5 * ( np.square(z_mg) + np.square(y_mg) + np.square(x_mg) ) / sigma/sigma )
 
     return data
+
+
