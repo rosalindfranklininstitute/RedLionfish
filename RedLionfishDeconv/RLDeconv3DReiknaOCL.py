@@ -112,7 +112,7 @@ class RLDeconv3DReiknaOCL:
         #Ignores complex part and set complex part to zero
         #Also contains a way to prevent division by zero by setting denominator to 1e-14
         divprogram = self.thr.compile("""
-        KERNEL void divide_3d_cplx_arrays_realonly(
+        KERNEL void divide_3d_cplx_arrays_realpositive_only(
             GLOBAL_MEM ${ctype} *a,
             GLOBAL_MEM ${ctype} *b,
             GLOBAL_MEM ${ctype} *dest)
@@ -124,23 +124,55 @@ class RLDeconv3DReiknaOCL:
             int IDX = (id0*get_global_size(1)+id1)*get_global_size(2) +id2;
 
             float a0 = a[IDX].x;
-            float b0= b[IDX].x;
+            float b0 = b[IDX].x;
 
-            if (b0 ==  0.0) {
-                b0= 1e-14;
+            if (b0 == 0.0) {
+                b0 = 1e-20;
             };
 
             //Calculate the division value
-            //dest[IDX] = ${div}(a[IDX], b[IDX]);
-            //dest[IDX] = ${div}(a[IDX], b0);
-            dest[IDX].x = a0/b0;
+            float v = a0/b0;
+            if (v<0){
+                v=0;
+            }
+            dest[IDX].x = v;
             dest[IDX].y = 0;
 
         }
         """, render_kwds=dict(
             ctype=dtypes.ctype(dtype),
             div=functions.div(dtype, dtype)))
-        self.kdivide_3d_cplx_arrays_realonly = divprogram.divide_3d_cplx_arrays_realonly
+        self.kdivide_3d_cplx_arrays_realonly = divprogram.divide_3d_cplx_arrays_realpositive_only
+
+        multprogram_realpositive = self.thr.compile("""
+        KERNEL void multiply_3d_cplx_arrays__realpositive_only(
+            GLOBAL_MEM ${ctype} *a,
+            GLOBAL_MEM ${ctype} *b,
+            GLOBAL_MEM ${ctype} *dest)
+        {
+            const SIZE_T id0 = get_global_id(0); 
+            const SIZE_T id1 = get_global_id(1);
+            const SIZE_T id2 = get_global_id(2);
+
+            int IDX = (id0*get_global_size(1)+id1)*get_global_size(2) +id2;
+
+            //Calculate the product value
+            ${ctype} v0 = ${mul}(a[IDX], b[IDX]);
+
+            float v = v0.x;
+
+            if (v<0){
+                v=0;
+            }
+            //Returns as a real number (complex part=0)
+            dest[IDX].x = v;
+            dest[IDX].y = 0;
+        }
+        """, render_kwds=dict(
+            ctype=dtypes.ctype(dtype),
+            mul=functions.mul(dtype, dtype)))
+        #Gets a reference to the kernel
+        self.kmultprogram_realpositive = multprogram_realpositive.multiply_3d_cplx_arrays__realpositive_only
 
         #Prepare psf fft data in device
         self.psf_fft_dev = self.thr.array(shape, dtype)
@@ -229,6 +261,7 @@ class RLDeconv3DReiknaOCL:
                 self.cfft_gpu(t0_dev, t1_dev, 1) # FFT inverse, result to t0_dev
 
                 #Division:  image / (psf*xn) , result in t1_dev
+                #self.kdivide_3d_cplx_arrays_realonly( data_cplx_dev , t0_dev , t1_dev , local_size=(1,1,1), global_size=self.shape )
                 self.kdivide_3d_cplx_arrays_realonly( data_cplx_dev , t0_dev , t1_dev , local_size=(1,1,1), global_size=self.shape )
 
                 #Second convolution with psf_flipped
@@ -237,7 +270,7 @@ class RLDeconv3DReiknaOCL:
                 self.cfft_gpu(t0_dev, t1_dev, 1) # FFT inverse, result in t0_dev
 
                 #Multiply with xn
-                self.kmultiply_3d_cplx_arrays( xn_dev , t0_dev, xn_buff , local_size=(1,1,1), global_size=self.shape ) #multiplication, result to xn_buff
+                self.kmultprogram_realpositive( xn_dev , t0_dev, xn_buff , local_size=(1,1,1), global_size=self.shape ) #multiplication, result to xn_buff
 
                 #Swap buffers
                 xn1_dev = xn_buff

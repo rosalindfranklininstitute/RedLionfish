@@ -7,3 +7,4 @@ RedLionfish.egg-info/
 *.spec
 conda-built-packages/
 test/test_and_benchm.spec
+*.pkl

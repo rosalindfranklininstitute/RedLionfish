@@ -81,8 +81,9 @@ def doRLDeconvolution12(data_np , psf_np , *, niter=10, callbkTickFunc=None):
     # data_deconv_norm_256 = convertAndNormalise(xn1_central)*256
     # data_deconv_uint8 = data_deconv_norm_256.astype('uint8')
     
-    data_deconv_uint8 = convertToUint8AndFullRange(xn1_central)
-    return data_deconv_uint8
+    #data_deconv_uint8 = convertToUint8AndFullRange(xn1_central)
+    #return data_deconv_uint8
+    return xn1_central
 
 
 #default
