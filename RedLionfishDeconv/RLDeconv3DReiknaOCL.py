@@ -311,7 +311,7 @@ def _isShapeTooBigForDevice(shape):
 
 
 #Default
-def block_RLDeconv3DReiknaOCL4(data, psfdata, *, niter=10, max_dim_size=256, psfpaddingfract = 1.2, callbkTickFunc=None):
+def block_RLDeconv3DReiknaOCL(data, psfdata, *, niter=10, max_dim_size=256, psfpaddingfract = 1.2, callbkTickFunc=None):
     '''
     In this version, blockstep is reduced, effectively setting the valid area to a smaller part of the block calculation.
     New parameter psfpaddingfract to set how how much padding relative to psfsize to use
@@ -322,7 +322,7 @@ def block_RLDeconv3DReiknaOCL4(data, psfdata, *, niter=10, max_dim_size=256, psf
         niter: number of Richardson-Lucy algorithm iterations
         paddingfract: padding to use when merging data as a relative fraction on psf size
     '''
-    logging.info(f"block_RLDeconv3DReiknaOCL4() , data.shape:{data.shape}, psfdata.shape:{psfdata.shape}, max_dim_size:{max_dim_size}, psfpaddingfract:{psfpaddingfract}")
+    logging.info(f"block_RLDeconv3DReiknaOCL() , data.shape:{data.shape}, psfdata.shape:{psfdata.shape}, max_dim_size:{max_dim_size}, psfpaddingfract:{psfpaddingfract}")
 
     if data.ndim !=3 or psfdata.ndim!=3:
         logging.error("Data and psf data must be 3 dimensional. Exiting.")
@@ -333,88 +333,59 @@ def block_RLDeconv3DReiknaOCL4(data, psfdata, *, niter=10, max_dim_size=256, psf
         logging.WARNING("PSF data shape is larger than GPU data size limits. Error may occur")
         #raise ValueError("Psf data shape is too large")
 
-    data = convertToFloat32AndNormalise(data,bResetZero=False)
-
+    #TODO: Check shapes here if it's ok to continue
     shapedata = data.shape
     shapepsf = psfdata.shape
 
     logging.info(f"data shape: {shapedata} , psf shape: {shapepsf}")
 
-    #For each of the dimensions.
-    #check size is larger than max_dim_size. If it is then limit block calculation using max_dim_size
-    blockshape=[0,0,0]
-    for axis in range(3):
-        blockshape0 = max_dim_size #default
-        if shapedata[axis]<max_dim_size :
-            blockshape0 = shapedata[axis]
-        blockshape[axis] = blockshape0
-    
-    logging.info(f"blockshape: {blockshape}")
+    bl_shape , bl_step = get_best_blockshape_and_blockstep(shapedata, shapepsf, max_dim_size,psfpaddingfract)
 
-    # Check for each axis whether PSF is larger than 2*blocksize and if blocking will be done along that axis
-    # If yes, then don't use this algorithm as it will give bad results
-
-    for axis in range(3):
-        if (shapedata[axis] > blockshape[axis]): #Will do blocking along this axis
-            if 2*shapepsf[axis]>blockshape[axis]:
-                raise ValueError("PSF and data does not allow efficient calculation using this block algorithm. Exiting.")
+    if bl_shape is None:
+        raise ValueError("Block shape not valid")
+    if bl_step is None:
+        raise ValueError("Block step not valid")
+        
+    data = convertToFloat32AndNormalise(data,bResetZero=False)
 
     #check if shape is too large
-    if _isShapeTooBigForDevice(blockshape):
+    if _isShapeTooBigForDevice(bl_shape):
         #logging.error("blockshape is too large. Exiting.")
         logging.warning("Adjusted blockshape is larger than GPU data size limits. Error may occur")
         #raise ValueError("blockshape is too large")
 
-    #Set step (and padding) from the blockshape and padding being psf size *1.5
-    #Valid area being the block size minus the psf size * psfpaddingfract
-
-    #blockstep = list(shapedata) #default, makes a copy
-    #validshape = list(shapedata)
-
-    blockstep = list(blockshape) #default, makes a copy
-    #validshape = list(blockshape)
-    for a in range(3):
-        v0 = int(blockshape[a] - psfpaddingfract*shapepsf[a])
-        if blockshape[a]< shapedata[a] and v0>0:
-            #validshape[a] = v0
-            #blockstep[a] =  validshape[a]
-            blockstep[a]=v0
-
-    validshape = blockstep
-    logging.info(f"blockstep: {blockstep}")
-
     datares = np.zeros(data.shape, dtype=np.float32) #To collect results
 
     #Setup Reikna RL Deconv Class to use this shape
-    my_rldeconv = RLDeconv3DReiknaOCL(blockshape)
+    my_rldeconv = RLDeconv3DReiknaOCL(bl_shape)
     my_rldeconv.setPSF(psfdata)
 
     logging.info(f"Beggining block-by-block iterations.")
     #do the block iteration, for loops for each dimension
     # the values with zero of the loop are for the left corner
     #The indexes i are for original data
-    for iz0 in range(0,shapedata[0], blockstep[0]):
+    for iz0 in range(0,shapedata[0], bl_step[0]):
         iz00=iz0
-        iz1 = iz0 + blockshape[0]
+        iz1 = iz0 + bl_shape[0]
         if iz1>shapedata[0]:
             iz1 = shapedata[0]
-            iz00 = iz1 - blockshape[0]
+            iz00 = iz1 - bl_shape[0]
             if iz00<0: iz00=0
         
-        for iy0 in range(0,shapedata[1], blockstep[1]):
+        for iy0 in range(0,shapedata[1], bl_step[1]):
             iy00 = iy0
-            iy1 = iy0 + blockshape[1]
+            iy1 = iy0 + bl_shape[1]
             if iy1>shapedata[1]:
                 iy1 = shapedata[1]
-                iy00 = iy1 - blockshape[1]
+                iy00 = iy1 - bl_shape[1]
                 if iy00<0: iy00=0
 
-            for ix0 in range(0,shapedata[2], blockstep[2]):
+            for ix0 in range(0,shapedata[2], bl_step[2]):
                 ix00 = ix0
-                ix1 = ix0 + blockshape[2]
+                ix1 = ix0 + bl_shape[2]
                 if ix1>shapedata[2]:
                     ix1 = shapedata[2]
-                    ix00 = ix1 - blockshape[2]
+                    ix00 = ix1 - bl_shape[2]
                     if ix00<0: ix00=0
 
                 logging.info(f"New block, intended origin iz0,iy0,ix0 = {iz0},{iy0},{ix0} , use origin iz00,iy00,ix00 = {iz00},{iy00},{ix00} , end iz1,iy1,ix1 = {iz1},{iy1},{ix1}")
@@ -435,11 +406,11 @@ def block_RLDeconv3DReiknaOCL4(data, psfdata, *, niter=10, max_dim_size=256, psf
 
                 #Crop the padded on the left side
                 if iz0 !=0 :
-                    jz0 += int( (blockshape[0] - validshape[0]) / 2)
+                    jz0 += int( (bl_shape[0] - bl_step[0]) / 2)
                 if iy0 !=0:
-                    jy0 += int( (blockshape[1] - validshape[1]) / 2)
+                    jy0 += int( (bl_shape[1] - bl_step[1]) / 2)
                 if ix0 !=0:
-                    jx0 += int( (blockshape[2] - validshape[2]) / 2)
+                    jx0 += int( (bl_shape[2] - bl_step[2]) / 2)
                 
                 logging.info(f"Crop block result from origin jz0,jy0,jx0 = : {jz0},{jy0},{jx0}")
                 
@@ -453,7 +424,43 @@ def block_RLDeconv3DReiknaOCL4(data, psfdata, *, niter=10, max_dim_size=256, psf
 
     #Hopefully, at this point, datares should have the final result of the blocked RL deconvolution
     return datares
+
+def get_best_blockshape_and_blockstep(shapedata,shapepsf, blocksize, psfpaddingfract):
+
+    #Set step (and padding) from the blockshape and padding being psf size*psfpaddingfract
+    #Valid area being the block size minus the psf size * psfpaddingfract
+
+    #For each of the dimensions.
+    #check size is larger than max_dim_size. If it is then limit block calculation using max_dim_size
+    blockshape=[0,0,0]
+    for axis in range(3):
+        blockshape0 = blocksize #default
+        if shapedata[axis]<blocksize :
+            blockshape0 = shapedata[axis]
+        blockshape[axis] = blockshape0
     
+    logging.info(f"blockshape: {blockshape}")
+
+    # Check for each axis whether PSF is larger than 2*blocksize and if blocking will be done along that axis
+    # If yes, then don't use this algorithm as it will give bad results
+
+    for axis in range(3):
+        if (shapedata[axis] > blockshape[axis]): #Will do blocking along this axis
+            if 2*shapepsf[axis]>blockshape[axis]:
+                logging.info("PSF and data does not allow efficient calculation using this block algorithm. Exiting.")
+                return None,None
+
+    blockstep = list(blockshape) #default, makes a copy
+    #validshape = list(blockshape)
+    for a in range(3):
+        v0 = int(blockshape[a] - psfpaddingfract*shapepsf[a])
+        if blockshape[a]< shapedata[a] and v0>0:
+            blockstep[a]=v0
+
+    #validshape = blockstep
+    logging.info(f"blockstep: {blockstep}")
+
+    return (blockshape, blockstep)
 
 def printGPUInfo():
     if isReiknaAvailable:

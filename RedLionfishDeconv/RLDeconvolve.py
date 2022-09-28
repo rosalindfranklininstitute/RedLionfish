@@ -77,11 +77,11 @@ def doRLDeconvolutionFromNpArrays(data_np , psf_np ,*, niter=10, method='gpu', u
                 blocksize=512 #Starts with this size of block and then halves for each failed attempt
                 while bKeepTrying:
                     try:
-                        resRL = rlreikna.block_RLDeconv3DReiknaOCL4(data_np , psf_np,niter=niter,max_dim_size=blocksize, callbkTickFunc=callbkTickFunc)
+                        resRL = rlreikna.block_RLDeconv3DReiknaOCL(data_np , psf_np,niter=niter,max_dim_size=blocksize, callbkTickFunc=callbkTickFunc)
                         bKeepTrying=False
                     except Exception as e:
                         #Error doing previous calculation, reduce block size
-                        logging.info(f"Error: block_RLDeconv3DReiknaOCL4 with blocksize={blocksize} failed (GPU)")
+                        logging.info(f"Error: block_RLDeconv3DReiknaOCL with blocksize={blocksize} failed (GPU)")
                         logging.info(e)
                         logging.info("Next it will try to reduce blocksize.")
                         if blocksize>=128 :
