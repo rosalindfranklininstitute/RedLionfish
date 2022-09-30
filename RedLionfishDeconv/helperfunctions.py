@@ -147,18 +147,17 @@ def convertToUint8AndFullRange(data):
     res_uint8 = res_256.astype(np.uint8)
     return res_uint8
 
-def generateGaussPSF(shape):
-    #shape = (32,32,32)
-    z_mg = np.linspace(-shape[0],shape[0] ,shape[0], dtype=np.float32)
-    y_mg = np.linspace(-shape[1],shape[1] ,shape[1], dtype=np.float32)
-    x_mg = np.linspace(-shape[2],shape[2] ,shape[2], dtype=np.float32)
+def generateGaussPSF(shape, sigma=10):
+    #print(shape)
+    
+    shape_mid = np.floor(np.array(shape)/2)
+    z = np.arange(-shape_mid[0], shape_mid[0],step=1, dtype=np.float32 )
+    y = np.arange(-shape_mid[1], shape_mid[1],step=1, dtype=np.float32 )
+    x = np.arange(-shape_mid[2], shape_mid[2],step=1, dtype=np.float32 )
 
-    z_mg, y_mg, x_mg = np.meshgrid( z_mg, y_mg, x_mg)
-
-    sigma = 5
+    z_mg, y_mg, x_mg = np.meshgrid( z, y, x)
 
     data = 1/sigma/math.sqrt(2*math.pi) * np.exp( -0.5 * ( np.square(z_mg) + np.square(y_mg) + np.square(x_mg) ) / sigma/sigma )
 
     return data
-
 

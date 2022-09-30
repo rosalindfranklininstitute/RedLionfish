@@ -86,7 +86,6 @@ def doRLDeconvolution12(data_np , psf_np , *, niter=10, callbkTickFunc=None):
     return xn1_central
 
 
-#default
 def doRLDeconvolution_DL2_4(data_np , psf_np ,*, niter=10, callbkTickFunc=None):
     #RL deconvolution based in DeconvolutionLab2 algorithm
     #Mimics DeconvolutionLab2 (DL2) as best as possible
@@ -154,3 +153,8 @@ def doRLDeconvolution_DL2_4(data_np , psf_np ,*, niter=10, callbkTickFunc=None):
 
     dataret = xn1
     return dataret
+
+def doRLDeconvolution(data_np , psf_np ,*, niter=10, callbkTickFunc=None):
+
+    #Uses the function below as default for doing the RL deconvolution
+    return doRLDeconvolution_DL2_4(data_np, psf_np, niter=niter, callbkTickFunc=callbkTickFunc)
