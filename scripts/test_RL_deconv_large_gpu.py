@@ -20,5 +20,6 @@ print(f"res_gpu.shape: {res_gpu.shape}")
 
 
 import napari
-np = napari.view_image(res_gpu, ndisplay=3)
+np = napari.view_image(data, ndisplay=3)
+np.add_image(res_gpu)
 napari.run()
