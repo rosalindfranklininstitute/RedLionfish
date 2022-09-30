@@ -7,9 +7,9 @@ import RedLionfishDeconv as rl
 import tifffile
 
 #Load some data
-data = tifffile.imread("test/testdata/gendata_psfconv_poiss_large.tif")
-#data = tifffile.imread("test/testdata/gendata_psfconv_poiss.tif")
-psf = tifffile.imread("test/testdata/PSF_RFI_8bit.tif")
+data = tifffile.imread("scripts/testdata/gendata_psfconv_poiss_large.tif")
+#data = tifffile.imread("scripts/testdata/gendata_psfconv_poiss.tif")
+psf = tifffile.imread("scripts/testdata/PSF_RFI_8bit.tif")
 
 print(f"data.shape: {data.shape}")
 print(f"psf.shape: {psf.shape}")
