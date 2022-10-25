@@ -19,13 +19,17 @@ REM Deploy package to Pypi
 rem updates
 python -m pip install --upgrade setuptools wheel --user
 
+rmdir /s /q dist
+
 rem This will create two files in /dist folder: a .whl and a .tar.zip (.gz) file with the package
-python setup.py sdist bdist_wheel
+pip install --upgrade build
+python -m build
 
 rem updates
 pip install --upgrade twine --user
 
 rem Uploads ( to PyPi by default). This will ask for credentials
-twine upload dist/*
+@rem twine upload dist/*
+python -m twine upload dist/* --config-file .pypirc
 
 Echo Upload to PyPi completed
