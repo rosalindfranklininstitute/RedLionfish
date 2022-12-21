@@ -124,15 +124,15 @@ If you are using the RedLionfish in your code, note that, by default, `def doRLD
 
 ## Testing
 
-Many examples can be found in `/test' folder.
+Many examples can be found in `/scripts' folder.
 
 A quick and benchmarking installation can be run from the proect root using the command:
 
-'python test\test_and_benchm.py'
+'python scripts/test_and_benchm.py'
 
-or (*nix)
+or in windows
 
-'python test/test_and_benchm.py'
+'python scripts\test_and_benchm.py'
 
 This will print out information about your GPU device (if available) and run some deconvolutions.
 It initially creates some data programatically, convolutes with a gaussian PSF, and add Poisson noise.
@@ -141,14 +141,14 @@ Richardson-Lucy deconvolution calculation using CPU and GPU methods, for 10 iter
 During the calculation it will print some information to the console/terminal, including the time it takes to run the calculation.
 
 
-Computer generated data and an experimental PSF can be found in `test\testdata`
+Computer generated data and an experimental PSF can be found in `scripts\testdata`
 
 ### Testing Redlionfish in napari
 
 Here is an example testing the Redlionfish plugin in napari:
 
-1. load data `test\testdata\gendata_psfconv_poiss_large.tif` (can use draga and drop)
-2. load psf data `test\testdata\PSF_RFI_8bit.tif`
+1. load data `scripts/testdata/gendata_psfconv_poiss_large.tif` (can use draga and drop)
+2. load psf data `scripts/testdata/PSF_RFI_8bit.tif`
 3. In the RedLionfish side window ensure that 'gendata_psfconv_poiss_large' is selected in data dropdown widget, and `PSF_RFI_8bit` is selected in psfdata widget.
 4. Choose number of iterations (default=10)
 5. Click 'Go' button and wait until result shows as a new data layer.
@@ -170,7 +170,7 @@ Please see benchmark values that highlights significant variability in calculati
 
 ## Coding
 
-Please feel free to browse /test folder for examples.
+Please feel free to browse the `/scripts` folder for examples.
 
 In your code, add the import.
 
