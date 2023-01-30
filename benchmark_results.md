@@ -4,7 +4,7 @@ RedLionfish v0.5
 
 Values provided are in seconds. Lower is better.
 
-| Machine                       | CPU                              | GPU                 | 256x256x256 | 256x256x256 | 1024x1024x1024 | 1024x1024x1024  |
+| Machine                       | CPU                              | GPU                 | 256x256x256 | 256x256x256 | 1024x1024x64   | 1024x1024x64    |
 |-------------------------------|----------------------------------|---------------------|-------------|-------------|----------------|-----------------|
 |                               |                                  |                     |     CPU     |     GPU     |      CPU       |      GPU        |
 | Laptop HP Spectre x360 Pro G2 | i5-6300                          | Intel HD            |      19     |      34     |      116       |      292 b      |
