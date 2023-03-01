@@ -53,7 +53,7 @@ import RedLionfishDeconv as rl
 # To output to console use print or loguru instead.
 
 import time
-
+import numpy
 
 ''' The parameters after the decorator setup the title and other properties of the widget window.
 
@@ -91,24 +91,38 @@ def RedLionfish_widget(
         print(f"data.shape = {data.shape} , type(data) = {type(data)} , data.dtype = {data.dtype}")
         print(f"psfdata.shape = {psfdata.shape} , type(psfdata) = {type(psfdata)} , psfdata.dtype = {psfdata.dtype}")
 
-        pbr=progress(total=iterations)
-        #pbr=progress()
-        pbr.set_description(f"Calculation progress")
-
-        def callback():
-            #print("iteration tick")
-            pbr.update(1)
-            pbr.refresh()
-            #time.sleep(0.1)
-
         if data.ndim==3 and psfdata.ndim==3: #For now, only 3D is supported
+            data0=None
+            psfdata0=None
+
+            #Ensure data is in numpy format
+            if isinstance(data, numpy.ndarray):
+                data0=data
+            else:
+                data0=numpy.asarray(data)
+
+            if isinstance(psfdata, numpy.ndarray):
+                psfdata0=psfdata
+            else:
+                psfdata0=numpy.asarray(psfdata)         
+            
+            pbr=progress(total=iterations)
+            #pbr=progress()
+            pbr.set_description(f"Calculation progress")
+
+            def callback():
+                #print("iteration tick")
+                pbr.update(1)
+                pbr.refresh()
+                #time.sleep(0.1)
+
             #logging.basicConfig(level=logging.INFO) #not working
 
             method = 'cpu' #Default
             if useGPU:
                 method='gpu'
             #Run the deconvolution
-            datares = rl.doRLDeconvolutionFromNpArrays(data, psfdata, niter= iterations, method = method ,resAsUint8=resAsUInt8 , callbkTickFunc=callback)
+            datares = rl.doRLDeconvolutionFromNpArrays(data0, psfdata0, niter=iterations, method = method ,resAsUint8=resAsUInt8 , callbkTickFunc=callback)
 
             ret = ( datares , { 'name':'RL-deconvolution'})
         else:

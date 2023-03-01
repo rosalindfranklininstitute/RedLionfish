@@ -17,7 +17,7 @@ limitations under the License.
 #To be run from the command line
 #It needs to be a seperate file otherwise the imports will fail
 
-__version__ = "0.8"
+__version__ = "0.9"
 
 # Ability to run from command line providing tiff (or other) filenames
 def main():
