@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2021 Rosalind Franklin Institute
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,11 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 
 #RedLionfish napari plugin
 
-'''
+"""
 Some help designing this collected from diffrent places
 
 https://napari.org/plugins/stable/hook_specifications.html#gui-hooks
@@ -25,7 +25,7 @@ These examples show adding widget using decorator @magic_factory.
 This decorator is poorly documented. I don't know how to use it.
 
 
-'''
+"""
 
 from magicgui import magic_factory
 from napari_plugin_engine import napari_hook_implementation
@@ -55,7 +55,7 @@ import RedLionfishDeconv as rl
 import time
 import numpy
 
-''' The parameters after the decorator setup the title and other properties of the widget window.
+""" The parameters after the decorator setup the title and other properties of the widget window.
 
 The parameters in the FUNCTION will set the elements that will be shown, but things like comboboxes
 or sliders will have no limits set, this should be done in the decorator.
@@ -64,7 +64,7 @@ see also
 https://napari.org/guides/stable/magicgui.html
 
 Note that the @magic_factory and @magicgui behave in similar way.
-'''
+"""
 
 #The widget
 @magic_factory (

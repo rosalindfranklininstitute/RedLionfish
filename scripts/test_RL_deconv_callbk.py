@@ -1,7 +1,7 @@
-'''
+"""
 This example shows how to do RL deconvolution using either CPU or GPU,
 using callback functionality that gives an update of progress of calculation.
-'''
+"""
 
 #from RedLionfishDeconv import *
 import RedLionfishDeconv as rl

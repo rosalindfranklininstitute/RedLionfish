@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2021 Rosalind Franklin Institute
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 
 #Entry point for doing RL 3D deconvolution using either CPU or GPU
 
@@ -28,21 +28,37 @@ import logging
 import numpy as np
 
 def doRLDeconvolutionFromNpArrays(data_np , psf_np ,*, niter=10, method='gpu', useBlockAlgorithm=False, callbkTickFunc=None, resAsUint8 = False):
-    '''
-        Richardson-Lucy deconvolution of 3D data.
-        It does NOT use the skimage.image.restoration.rishardson_lucy.
-        Iteration uses FFT-based convolutions, either using CPU (scipy) or GPU (Reikna OpenCL)
-        
-        Parameters:
-            data_np: 3d volume of data as numpy array
-            psf_np: point-spread-function to use for deconvolution
-            niter: number of iterations to perform
-            method: 'gpu' to use Reikna OpenCL , 'cpu' to use Scipy. 
-            useBlockAlgorithm: 'gpu' only, forces to use block algorithm. Result may show boundary effects.
-            callbkTickFunc: function to use to provide tick update during the RL algorithm. This can be either each iteration step or in case of block algorithm, each block calculation
-            resAsUint8: Set to return the result of the RL deconvolution as a np.uint8 array. Useful for displaying in napari for example. Note that it will adjust minimum and maximum to ful range 0-255.
-                Set to False to return result as default np.float32 format.
-    '''
+    """Richardson-Lucy deconvolution of 3D data.
+
+    This function executes the Richardson-Lucy deconvolution of a 3D numpy
+    array.
+
+    It does NOT use the skimage.image.restoration.rishardson_lucy.
+    Iteration uses FFT-based convolutions, either using CPU (scipy) or GPU
+    (Reikna OpenCL)
+    
+    Args:
+        data_np (numpy.ndarray) : 3d volume of data as a numpy array
+        psf_np (numpy.ndarray) : 3D point-spread-function to use for
+            deconvolution
+        niter (int) : number of iterations to perform
+        method (str) : 'gpu' to use Reikna OpenCL , 'cpu' to use Scipy. 
+        useBlockAlgorithm (str) : 'gpu' only, forces to use block algorithm.
+            Result may show boundary effects.
+        callbkTickFunc (Callable) : function to use to provide tick update
+            during the RL algorithm. This can be
+            either each iteration step or in case of block algorithm, each
+            block calculation
+        resAsUint8 (bool) : Set to return the result of the RL deconvolution
+            as a np.uint8 array. Useful for displaying in napari for
+            example. Note that it will adjust minimum and maximum to ful
+            range 0-255.
+            Set to False to return result as default np.float32 format.
+    
+    Returns:
+        numpy.ndarray : a 3D numpy array with the result after deconvolution
+        None if input arrays are not 3D or if error
+    """
     from RedLionfishDeconv import helperfunctions
 
     logging.info(f"doRLDeconvolutionFromNpArrays(), niter={niter} , method={method} , useBlockAlgorithm={useBlockAlgorithm}, resAsUint8={resAsUint8}")
@@ -115,18 +131,34 @@ def doRLDeconvolutionFromNpArrays(data_np , psf_np ,*, niter=10, method='gpu', u
     return resRL
 
 def doRLDeconvolutionFromFiles(datapath, psfpath, niter, savepath=None):
-    '''
-    Opens tiff files and runs Richardson-Lucy deconvoultion
-    savepath: location and filename of the tiff file that will store the result
-
+    """ Opens tiff files and runs Richardson-Lucy deconvoultion
+    
+    Opens data and psf files, assuming they are tiff files, and runs the
+        RL deconvolution
+    
+    Args:
+        datapath (str): location of the input data (3D)
+        savepath: location and filename of the tiff file that will store the
+            result
+        niter (int): number of RL iterations
+    
     Returns:
-        res_np: result of the RL deconvolution
-    '''
+        numpy.ndarray: result of the RL deconvolution
+
+    Raises:
+        If 
+    """
+
     import tifffile as tf
+    
 
     #Check al info is ok
-    data_np = np.array(tf.imread(datapath))
-    psf_np = np.array(tf.imread(psfpath))
+    try:
+        data_np = np.array(tf.imread(datapath))
+        psf_np = np.array(tf.imread(psfpath))
+    except:
+        raise Exception("Could not open data_np or psf_np files. Maybe file(s) are not valid tiff files or files could not be found")
+
 
     res_np = doRLDeconvolutionFromNpArrays(data_np, psf_np, niter=niter, resAsUint8=True)
 
