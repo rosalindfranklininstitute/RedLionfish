@@ -37,7 +37,11 @@ then the plugin should be immediately available in the *Menu -> Plugins -> RedLi
 
 ## Installation
 
-Previously there was a problem in installing using `pip`, because no PyOpenCL wheels for windows were avaiable. It is now avaialble. This package can be installed using pip or conda.
+Previously there was a problem in installing using `pip`, because no PyOpenCL wheels for windows were avaiable. It is now avaialble.
+
+This package can be installed using pip or conda.
+
+Napari plugin installation engine can also be used to install this package.
 
 ### Conda install
 
@@ -124,9 +128,11 @@ If you are using the RedLionfish in your code, note that, by default, `def doRLD
 
 ## Testing
 
+Use pytest to test the package. Test files are in `/test` folder
+
 Many examples can be found in `/scripts' folder.
 
-A quick and benchmarking installation can be run from the proect root using the command:
+A useful way to test and benchmark the package installation can be run from the proect root using the command:
 
 'python scripts/test_and_benchm.py'
 
@@ -168,15 +174,16 @@ GPU calculation will be significantly faster if using a dedicated GPU card.
 Please see benchmark values that highlights significant variability in calculation speeds.
 
 
+[benchmark_results.md](benchmark_results.md)
+
+
 ## Coding
 
 Please feel free to browse the `/scripts` folder for examples.
 
-In your code, add the import.
+In order to use the functions, add the follwoing import to your code,
 
 `import RedLionfishDeconv`
-
-in order to use the functions.
 
 The most useful function is perhaps the following.
 

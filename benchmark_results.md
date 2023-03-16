@@ -14,4 +14,4 @@ Values provided are in seconds. Lower is better.
 | Baskerville Tier 2            | Intel Xeon Platinum 8360Y 2.4GHz | A100-SXH4-40Gb      |     5.9     |     3.3     |      26.2      |       5.6 b     |
 | Laptop Asus Vivobook X3400PH  | Intel Core i5-11300H 3.10GHz     | NVIDIA GeForce GTX 1650 | 16.2    |     4.02    |      155       |      33.8 b     |
 
-b: blocking algorithm was used
+b: utilised blocking algorithm
