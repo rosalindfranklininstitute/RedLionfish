@@ -18,7 +18,7 @@ limitations under the License.
 
 #TODO: A lot of these parameters can be passed as **kwargs.
 #TODO: Test GPU acceleration on MacOS
-#TODO: Consider open files using scipy.imread rather than the tifffile modules
+#TODO: Consider open files using scikit image imread() rather than the tifffile modules
 
 
 #from RedLionfishDeconv import helperfunctions
@@ -146,7 +146,7 @@ def doRLDeconvolutionFromFiles(datapath, psfpath, niter, savepath=None):
         numpy.ndarray: result of the RL deconvolution
 
     Raises:
-        If 
+        Exception if error opening file(s) 
     """
 
     import tifffile as tf
