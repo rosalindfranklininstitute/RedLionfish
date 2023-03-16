@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2021 Rosalind Franklin Institute
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 
 import numpy as np
 import logging
@@ -20,11 +20,11 @@ import math
 
 #Helper function
 def change3DSizeTo(data, shape):
-    '''
+    """
     Resizes data to the new shape keeping data centralized.
     If data size is smaller, then egdes are cropped.
     If data is larger, data will be padded with zeros.
-    '''
+    """
     #based in size() code found in
     #https://github.com/Biomedical-Imaging-Group/DeconvolutionLab2/blob/e9af0aba493ba137d70877154648e5583e376a81/src/main/java/signal/RealSignal.java#L531
 
@@ -51,11 +51,11 @@ def change3DSizeTo(data, shape):
     return psf1
 
 def change3DSizeTo_KeepOrigin(data, shape):
-    '''
+    """
     Resizes data to the new shape keeping data near origin.
     If data size is smaller, then egdes are cropped.
     If data is larger, data will be padded with zeros.
-    '''
+    """
 
     logging.info(f"change3DSizeKeepOriginTo() , shape:{shape}")
     
@@ -107,13 +107,13 @@ def circulify3D(data3D):
     return data0
 
 def convertToFloat32AndNormalise(data, normaliseType=None, bResetZero=False):
-    '''
+    """
     Converts data to float32 format and optionally resets zero and normalises
     Parameters:
         data
         normalisetype: None for no normalisation, 'max' normalises to max, 'sum' to normalise to sum of whole volume
         bResetZero: flags to whether shift the minimum value to zero
-    '''
+    """
     if data is None:
         return None
     

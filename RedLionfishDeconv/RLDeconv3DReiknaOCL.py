@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2021 Rosalind Franklin Institute
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 
 #Richardson-Lucy using Reikna OpenCL
 
@@ -44,7 +44,7 @@ import numpy as np
 from .helperfunctions import *
 
 class RLDeconv3DReiknaOCL:
-    '''
+    """
     Class that helps setting up and run Richardson Lucy deconvolution using Reikna opencl FFT
     To use this, construct an instance by providing the shape information of the data that you want to do the running the RL algorithm.
     This will setup the calculations in the device, which include compilation steps.
@@ -56,15 +56,15 @@ class RLDeconv3DReiknaOCL:
 
     Note that calculation may fail if data is too large, due to limitations also imposed by PyOpenCL and ReiknaFFT.
     If this is a problem, you should use the block convolution algorithms below.
-    '''
+    """
     def __init__(self, shape):
-        '''
+        """
         Parameter
             shape: shape of the data that will be used for the deconvolution algorithm.
             It is important to do it here so that class can do some preparatory steps before running
             the iterative calculation
 
-        '''
+        """
 
         self.shape = shape
 
@@ -213,13 +213,13 @@ class RLDeconv3DReiknaOCL:
         self.is_psf_set = True
     
     def doRLDeconvolution(self, data_np, *, niter = 10, callbkTickFunc = None):
-        '''
+        """
         Does the Richardson Lucy Deconvolution using Reikna OpenCL
         with custom mulitply and division kernels
         
         returns None if fail
         returns the Deconvoluted data volume, only the real part (float32 format)
-        '''
+        """
         
         logging.info("doRLDeconvolution()")
 
@@ -310,11 +310,11 @@ class RLDeconv3DReiknaOCL:
         return maxsize
 
 def nonBlock_RLDeconvolutionReiknaOCL( data_np, psf_np, *, niter = 10, callbkTickFunc=None):
-    '''
+    """
     This will do the RL deconvolution from 3D data_np using the psf_np provided.
     This does not use block iteration so large arrays may throw out of memory errors
 
-    '''
+    """
     logging.info("nonBlock_RLDeconvolutionReiknaOCL()")
     
     if data_np.ndim !=3 or psf_np.ndim!=3:
@@ -345,7 +345,7 @@ def _isShapeTooBigForDevice(shape):
 
 #Default
 def block_RLDeconv3DReiknaOCL(data, psfdata, *, niter=10, max_dim_size=256, psfpaddingfract = 1.2, callbkTickFunc=None):
-    '''
+    """
     In this version, blockstep is reduced, effectively setting the valid area to a smaller part of the block calculation.
     New parameter psfpaddingfract to set how how much padding relative to psfsize to use
 
@@ -354,7 +354,7 @@ def block_RLDeconv3DReiknaOCL(data, psfdata, *, niter=10, max_dim_size=256, psfp
         psfdata: numpy 3D array with the PSF to use for the deconvolution
         niter: number of Richardson-Lucy algorithm iterations
         paddingfract: padding to use when merging data as a relative fraction on psf size
-    '''
+    """
     logging.info(f"block_RLDeconv3DReiknaOCL() , data.shape:{data.shape}, psfdata.shape:{psfdata.shape}, max_dim_size:{max_dim_size}, psfpaddingfract:{psfpaddingfract}")
 
     if data.ndim !=3 or psfdata.ndim!=3:

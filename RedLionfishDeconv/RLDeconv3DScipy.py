@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2021 Rosalind Franklin Institute
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 
 #Several versions of Richardson-Lucy deconvolution using scipy.signal convolution
 
@@ -156,5 +156,5 @@ def doRLDeconvolution_DL2_4(data_np , psf_np ,*, niter=10, callbkTickFunc=None):
 
 def doRLDeconvolution(data_np , psf_np ,*, niter=10, callbkTickFunc=None):
 
-    #Uses the function below as default for doing the RL deconvolution
+    #Uses the function  doRLDeconvolution_DL2_4 as default for doing the RL deconvolution
     return doRLDeconvolution_DL2_4(data_np, psf_np, niter=niter, callbkTickFunc=callbkTickFunc)

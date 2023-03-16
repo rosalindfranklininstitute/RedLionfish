@@ -1,8 +1,8 @@
-'''
+"""
 Benchmark RedLionfish deconvolution on a large 3D data.
 Generate data here and then run the deconvolution.
 Prints the time it takes to complete the deconvolution
-'''
+"""
 
 import time
 import numpy as np
