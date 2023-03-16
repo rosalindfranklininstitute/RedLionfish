@@ -156,5 +156,5 @@ def doRLDeconvolution_DL2_4(data_np , psf_np ,*, niter=10, callbkTickFunc=None):
 
 def doRLDeconvolution(data_np , psf_np ,*, niter=10, callbkTickFunc=None):
 
-    #Uses the function below as default for doing the RL deconvolution
+    #Uses the function  doRLDeconvolution_DL2_4 as default for doing the RL deconvolution
     return doRLDeconvolution_DL2_4(data_np, psf_np, niter=niter, callbkTickFunc=callbkTickFunc)
