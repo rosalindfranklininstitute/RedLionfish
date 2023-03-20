@@ -1,4 +1,6 @@
-# Red lionfish (RL) deconvolution
+![RedLionfish Logo](./redlionfish_logo.svg)
+
+# RedLionfish (RL) deconvolution
 
 *Richardson-Lucy deconvolution for fishes, scientists and engineers.*
 
@@ -43,18 +45,20 @@ This package can be installed using pip or conda.
 
 Napari plugin installation engine can also be used to install this package.
 
-### Conda install
-
-This package is available in conda-forge channel.
-It contains the precompiled libraries and it will install all the requirments for GPU-accelerated RL calculations.
-
-`conda install redlionfish -c conda-forge`
 
 ### Install from PyPi
 
 ```
 pip install redlionfish
 ```
+
+
+### Conda install
+
+This package is available in conda-forge channel.
+It contains the precompiled libraries and it will install all the requirments for GPU-accelerated RL calculations.
+
+`conda install redlionfish -c conda-forge`
 
 In Linux , the package `ocl-icd-system` may also be useful.
 
@@ -85,6 +89,7 @@ The installation is similar to the previously described for PyPi.
 `conda install reikna pyopencl`
 
 or
+
 `conda install reikna pyopencl ocl-icd-system -c conda-forge` (Linux)
 
 Clone/download from source [https://github.com/rosalindfranklininstitute/RedLionfish/](https://github.com/rosalindfranklininstitute/RedLionfish/)
@@ -122,7 +127,7 @@ As such, to overcome this problem, a block algorithm is used, which splits data 
 The results are then combined together to give the final result.
 This affects the perfomance of the calculation rather significantly, but with the advantage of being possible to handle large data volumes.
 
-If Richardson-Lucy deconvolution using the GPU method fails, RedLionfish will falls back to CPU calculation. Check console output for messages.
+If Richardson-Lucy deconvolution using the GPU method fails, RedLionfish will fallback to CPU calculation. Check console output for messages.
 
 If you are using the RedLionfish in your code, note that, by default, `def doRLDeconvolutionFromNpArrays()` method it uses the GPU OpenCL version.
 
