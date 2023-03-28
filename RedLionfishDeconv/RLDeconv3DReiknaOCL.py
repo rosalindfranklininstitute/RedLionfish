@@ -275,6 +275,8 @@ class RLDeconv3DReiknaOCL:
                 #Swap buffers
                 xn1_dev = xn_buff
                 xn_buff = xn_dev
+                
+                print('Iteration number: #', i, 'is done!')
 
                 if not callbkTickFunc is None:
                     callbkTickFunc()
