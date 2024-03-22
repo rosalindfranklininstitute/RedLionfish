@@ -43,6 +43,9 @@ import logging
 import numpy as np
 from .helperfunctions import *
 
+#global
+RL_CL_PLATFORM_PREFERENCE="none"
+
 class RLDeconv3DReiknaOCL:
     """
     Class that helps setting up and run Richardson Lucy deconvolution using Reikna opencl FFT
@@ -57,7 +60,7 @@ class RLDeconv3DReiknaOCL:
     Note that calculation may fail if data is too large, due to limitations also imposed by PyOpenCL and ReiknaFFT.
     If this is a problem, you should use the block convolution algorithms below.
     """
-    def __init__(self, shape, platform_preference="cuda"):
+    def __init__(self, shape):
         """
         Parameter
             shape: shape of the data that will be used for the deconvolution algorithm.
@@ -66,11 +69,13 @@ class RLDeconv3DReiknaOCL:
 
         """
 
+        global RL_CL_PLATFORM_PREFERENCE
+        
         self.shape = shape
 
         self.api = cluda.ocl_api()
 
-        ocl_platforms = self.api.get_platforms()[0]
+        ocl_platforms = self.api.get_platforms()
 
         if len(ocl_platforms)==0:
             raise ValueError(f"Could not find any OpenCL platform.")
@@ -78,7 +83,7 @@ class RLDeconv3DReiknaOCL:
         # Check if any of the platforms fits to the preference string
         pref_dev_indexes=[]
         for i,pl0 in enumerate(ocl_platforms):
-            if platform_preference.lower() in str(pl0).lower():
+            if RL_CL_PLATFORM_PREFERENCE.lower() in str(pl0).lower():
                 pref_dev_indexes.append(i)
         
         #Get first device available. Default behaviour
@@ -333,7 +338,7 @@ def nonBlock_RLDeconvolutionReiknaOCL( data_np, psf_np, *, niter = 10, callbkTic
     This does not use block iteration so large arrays may throw out of memory errors
 
     """
-    logging.info("nonBlock_RLDeconvolutionReiknaOCL()")
+    logging.info(f"nonBlock_RLDeconvolutionReiknaOCL(), niter:{niter}, platform_preference:{RL_CL_PLATFORM_PREFERENCE}")
     
     if data_np.ndim !=3 or psf_np.ndim!=3:
         logging.error ("Data and psf data must be 3 dimensional. Exiting.")
