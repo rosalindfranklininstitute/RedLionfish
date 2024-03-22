@@ -24,7 +24,7 @@
         
         {
             "name": "Python: napari",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "module": "napari",
             "console": "integratedTerminal",
