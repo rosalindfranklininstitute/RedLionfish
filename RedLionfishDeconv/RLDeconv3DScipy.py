@@ -15,6 +15,7 @@ limitations under the License.
 """
 
 #Several versions of Richardson-Lucy deconvolution using scipy.signal convolution
+# or scipy.fft
 
 import numpy as np
 import scipy.fft

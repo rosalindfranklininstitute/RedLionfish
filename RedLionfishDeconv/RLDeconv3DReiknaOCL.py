@@ -57,7 +57,7 @@ class RLDeconv3DReiknaOCL:
     Note that calculation may fail if data is too large, due to limitations also imposed by PyOpenCL and ReiknaFFT.
     If this is a problem, you should use the block convolution algorithms below.
     """
-    def __init__(self, shape):
+    def __init__(self, shape, platform_preference="cuda"):
         """
         Parameter
             shape: shape of the data that will be used for the deconvolution algorithm.
@@ -69,10 +69,28 @@ class RLDeconv3DReiknaOCL:
         self.shape = shape
 
         self.api = cluda.ocl_api()
-        self.thr = self.api.Thread.create()
 
-        ocldevice = self.api.get_platforms()[0].get_devices()[0] #Get first device available
+        ocl_platforms = self.api.get_platforms()[0]
+
+        if len(ocl_platforms)==0:
+            raise ValueError(f"Could not find any OpenCL platform.")
+        
+        # Check if any of the platforms fits to the preference string
+        pref_dev_indexes=[]
+        for i,pl0 in enumerate(ocl_platforms):
+            if platform_preference.lower() in str(pl0).lower():
+                pref_dev_indexes.append(i)
+        
+        #Get first device available. Default behaviour
+        ocldevice = self.api.get_platforms()[0].get_devices()[0]
+
+        if len(pref_dev_indexes)>0:
+            #get the first of the matching platforms
+            ocldevice = self.api.get_platforms()[pref_dev_indexes[0]].get_devices()[0]
+
         logging.info(f"OCL device selected : {ocldevice}")
+
+        self.thr = self.api.Thread.create()
 
         devparam = self.api.DeviceParameters(ocldevice)
         self.maxsize = devparam.max_work_item_sizes
