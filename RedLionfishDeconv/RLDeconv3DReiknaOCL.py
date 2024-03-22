@@ -102,7 +102,7 @@ class RLDeconv3DReiknaOCL:
         logging.info(f"Device params max_work_item_sizes: {self.maxsize}")
 
         #check shape is not too large
-        if np.product(np.array(shape)) > np.product(np.array(self.maxsize)):
+        if np.prod(np.array(shape)) > np.prod(np.array(self.maxsize)):
             #logging.error(f"Shape {shape} is too large for OpenCL device shape limits {self.maxsize}")
             # raise ValueError("Shape is too large.")
             logging.info(f"Shape {shape} is too large for OpenCL device shape limits {self.maxsize}. But will try regardless.")
@@ -357,8 +357,8 @@ def _isShapeTooBigForDevice(shape):
     
     maxsize = RLDeconv3DReiknaOCL.getDefaultDeviceMaxSize()
 
-    mult_maxsize= np.product(np.array(maxsize))
-    mult_shape = np.product(np.array(shape))
+    mult_maxsize= np.prod(np.array(maxsize))
+    mult_shape = np.prod(np.array(shape))
 
     if mult_shape>mult_maxsize:
         ret=True
