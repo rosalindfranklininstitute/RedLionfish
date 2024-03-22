@@ -21,5 +21,14 @@
             "console": "integratedTerminal",
             "justMyCode": false
         }
+        
+        {
+            "name": "Python: napari",
+            "type": "python",
+            "request": "launch",
+            "module": "napari",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        }
     ]
 }
