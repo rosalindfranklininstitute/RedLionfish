@@ -219,6 +219,24 @@ Otherwise, navigate to `conda-recipe`, and execute on the command-line `conda bu
 
 It will take a while to complete.
 
+## Citation
+
+If you use RedLionfish in your work, please cite:
+
+Perdigão LMA, Berger C, Yee NB-Y, Darrow MC, Basham M. RedLionfish – fast Richardson-Lucy Deconvolution package for efficient point spread function suppression in volumetric data. *Wellcome Open Research* 2024, **9**:296. https://doi.org/10.12688/wellcomeopenres.21505.1
+
+```bibtex
+@article{perdigao2024redlionfish,
+  title   = {RedLionfish -- fast Richardson-Lucy Deconvolution package for efficient point spread function suppression in volumetric data},
+  author  = {Perdig{\~a}o, Lu{\'i}s M. A. and Berger, Casper and Yee, Neville B.-Y. and Darrow, Michele C. and Basham, Mark},
+  journal = {Wellcome Open Research},
+  volume  = {9},
+  pages   = {296},
+  year    = {2024},
+  doi     = {10.12688/wellcomeopenres.21505.1}
+}
+```
+
 ## Contact
 
 Report issues and questions in project's github page, please. Please don't try to send emails as they may be igored or spam-filtered.
